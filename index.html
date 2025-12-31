@@ -3,31 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern Call Center Dashboard</title>
+<title>Call Center vs Branch Reconciliation</title>
 <style>
   :root {
-    --primary: #4361ee;
-    --primary-dark: #3a0ca3;
-    --secondary: #f72585;
-    --bg-body: #f8f9fa;
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary: #f59e0b;
+    --bg-body: #f1f5f9;
     --bg-card: #ffffff;
-    --text-main: #2b2d42;
-    --text-light: #8d99ae;
-    --border: #e9ecef;
-    --success: #4cc9f0;
-    --success-bg: #caf0f8;
-    --warning: #ffd166;
-    --warning-bg: #fff3cd;
-    --danger: #ef476f;
-    --danger-bg: #ffe5e5;
-    --shadow: 0 4px 12px rgba(0,0,0,0.05);
+    --text-main: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --success-bg: #d1fae5;
+    --danger: #ef4444;
+    --danger-bg: #fee2e2;
+    --warning: #f59e0b;
+    --warning-bg: #fef3c7;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --radius: 12px;
   }
 
   * { box-sizing: border-box; outline: none; }
 
   body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
     padding: 0;
     background-color: var(--bg-body);
@@ -37,83 +37,38 @@
     min-height: 100vh;
   }
 
-  /* Header */
   header {
     background: var(--bg-card);
     padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
   }
 
-  .brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
+  .brand { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
   
-  .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary-dark);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-  }
-
-  /* Main Layout */
   main {
     padding: 2rem;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
     width: 100%;
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 350px 1fr;
     gap: 2rem;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
     main { grid-template-columns: 1fr; }
   }
 
-  /* Cards & Forms */
-  .card {
-    background: var(--bg-card);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
-    border: 1px solid var(--border);
-  }
-
-  h2, h3 { margin-top: 0; }
-  h3 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 1rem; border-bottom: 2px solid var(--bg-body); padding-bottom: 0.5rem; }
-
-  /* KPI Dashboard */
-  .kpi-container {
+  /* KPI Cards */
+  .kpi-grid {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .kpi-card {
@@ -121,253 +76,176 @@
     padding: 1.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    border-left: 5px solid var(--primary);
-    transition: transform 0.2s;
+    border: 1px solid var(--border);
+  }
+  
+  .kpi-title { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+  .kpi-value { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
+  .kpi-sub { font-size: 0.8rem; color: var(--text-light); }
+  
+  .text-danger { color: var(--danger); }
+  .text-success { color: var(--success); }
+  .text-primary { color: var(--primary); }
+
+  /* Forms & Panels */
+  .panel {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    height: fit-content;
   }
 
-  .kpi-card:hover { transform: translateY(-3px); }
-  .kpi-card.success { border-color: var(--success); }
-  .kpi-card.danger { border-color: var(--danger); }
-  .kpi-card.warning { border-color: var(--warning); }
+  h3 { margin-top: 0; font-size: 1.1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; color: var(--text-main); }
 
-  .kpi-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); font-weight: 600; }
-  .kpi-value { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; color: var(--text-main); }
-
-  /* Form Styles */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .form-group { margin-bottom: 1rem; }
-  label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 500; color: var(--text-main); }
-  
+  .form-group.full { grid-column: 1 / -1; }
+
+  label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
   input, select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.7rem;
     border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 0.95rem;
     transition: border-color 0.2s;
-    background: #fdfdfd;
   }
+  input:focus, select:focus { border-color: var(--primary); ring: 2px solid var(--primary); }
 
-  input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); }
-
-  button.btn-primary {
+  button.btn-add {
     width: 100%;
-    padding: 0.85rem;
+    padding: 0.8rem;
     background: var(--primary);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    margin-top: 1rem;
   }
+  button.btn-add:hover { background: var(--primary-dark); }
 
-  button.btn-primary:hover { background: var(--primary-dark); }
-  button.btn-primary:active { transform: scale(0.98); }
-
-  /* Table Styles */
-  .table-container {
-    overflow-x: auto;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-  }
-
-  thead {
-    background: #f1f3f5;
-    color: var(--text-light);
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-
-  th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+  /* Table */
+  .table-wrapper { overflow-x: auto; background: white; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
   
-  th.sortable { cursor: pointer; user-select: none; }
-  th.sortable:hover { color: var(--primary); background: #e9ecef; }
+  thead { background: #f8fafc; }
+  th { font-weight: 600; color: var(--text-light); font-size: 0.8rem; text-transform: uppercase; }
   
-  tbody tr:hover { background-color: #fafafa; }
-  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
 
-  /* Badges for Success Rate */
+  .diff-positive { background: #fee2e2; color: #b91c1c; font-weight: 700; } /* Red if discrepancy exists */
+  .diff-zero { background: #d1fae5; color: #047857; font-weight: 700; } /* Green if match */
+
   .badge {
-    padding: 0.35rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    display: inline-block;
-    min-width: 60px;
-    text-align: center;
-  }
-  .badge-green { background: var(--success-bg); color: #0077b6; } /* Deep Blue text for contrast on light blue */
-  .badge-yellow { background: var(--warning-bg); color: #856404; }
-  .badge-red { background: var(--danger-bg); color: #c92a2a; }
-
-  .btn-icon {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    padding: 5px;
+    padding: 4px 8px;
     border-radius: 4px;
-    transition: all 0.2s;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
-  .btn-icon:hover { color: var(--danger); background: var(--danger-bg); }
+  .badge-red { background: var(--danger-bg); color: var(--danger); }
+  .badge-green { background: var(--success-bg); color: var(--success); }
 
-  /* Toast Notification */
-  #toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  .action-btn {
+    background: none; border: none; cursor: pointer; color: var(--text-light);
+    padding: 5px; border-radius: 4px;
   }
-
-  .toast {
-    background: #333;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    animation: slideIn 0.3s ease-out forwards;
-    opacity: 0;
-    transform: translateX(100%);
-  }
-
-  .toast.success { border-left: 4px solid var(--success); }
-  .toast.error { border-left: 4px solid var(--danger); }
-
-  @keyframes slideIn {
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  @keyframes fadeOut {
-    to { opacity: 0; transform: translateX(100%); }
-  }
-  
-  .empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text-light);
-  }
+  .action-btn:hover { color: var(--danger); background: var(--danger-bg); }
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-    CallCenter Pro
-  </div>
-  <div class="user-profile">
-    <span>Admin</span>
-    <div class="avatar">A</div>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    Delivery Reconciliation
   </div>
 </header>
 
 <main>
   <!-- KPI Dashboard -->
-  <div class="kpi-container">
+  <div class="kpi-grid">
     <div class="kpi-card">
-      <span class="kpi-title">Total Orders</span>
-      <div class="kpi-value" id="kpiTotal">0</div>
+      <div class="kpi-title">CC Orders (Received)</div>
+      <div class="kpi-value text-primary" id="kpiCcQty">0</div>
     </div>
-    <div class="kpi-card success">
-      <span class="kpi-title">Successful</span>
-      <div class="kpi-value" id="kpiSuccess">0</div>
+    <div class="kpi-card">
+      <div class="kpi-title">Branch Sales (Actual)</div>
+      <div class="kpi-value text-success" id="kpiBranchQty">0</div>
     </div>
-    <div class="kpi-card danger">
-      <span class="kpi-title">Cancelled</span>
-      <div class="kpi-value" id="kpiCancelled">0</div>
+    <div class="kpi-card" style="border-left: 5px solid var(--danger);">
+      <div class="kpi-title">Discrepancy (Qty)</div>
+      <div class="kpi-value text-danger" id="kpiDiffQty">0</div>
+      <div class="kpi-sub">Orders missing at Branch</div>
     </div>
-    <div class="kpi-card warning">
-      <span class="kpi-title">Success Rate</span>
-      <div class="kpi-value" id="kpiRate">0%</div>
+    <div class="kpi-card" style="border-left: 5px solid var(--secondary);">
+      <div class="kpi-title">Discrepancy ($)</div>
+      <div class="kpi-value text-danger" id="kpiDiffAmt">0</div>
+      <div class="kpi-sub">Financial Loss</div>
     </div>
   </div>
 
-  <!-- Sidebar / Controls -->
-  <section class="controls-area">
-    <!-- Add Entry Form -->
-    <div class="card">
-      <h3>Add New Entry</h3>
-      <form id="addEntryForm" onsubmit="event.preventDefault(); addEntry();">
+  <!-- Left Column: Input Form -->
+  <section>
+    <div class="panel">
+      <h3>Add Daily Entry</h3>
+      <form id="dataForm" onsubmit="event.preventDefault(); addEntry();">
         <div class="form-group">
-          <label for="entryDate">Date</label>
-          <input type="date" id="entryDate" required>
+          <label>Date</label>
+          <input type="date" id="inpDate" required>
         </div>
-        
         <div class="form-group">
-          <label for="branchSelect">Branch</label>
-          <select id="branchSelect" required>
-            <option value="Hamdan St">Hamdan St</option>
-            <option value="Al Khalidiyah">Al Khalidiyah</option>
-            <option value="Shabiya 11">Shabiya 11</option>
-            <option value="Muroor">Muroor</option>
-            <option value="Al Majaz">Al Majaz</option>
-            <option value="Al Barsha">Al Barsha</option>
-            <option value="Al Satwa">Al Satwa</option>
-            <option value="Al Rigga">Al Rigga</option>
+          <label>Branch</label>
+          <select id="inpBranch" required>
+            <option>Hamdan St</option>
+            <option>Al Khalidiyah</option>
+            <option>Shabiya 11</option>
+            <option>Muroor</option>
+            <option>Al Majaz</option>
+            <option>Al Barsha</option>
+            <option>Al Satwa</option>
+            <option>Al Rigga</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="ordersReceived">Orders Received</label>
-          <input type="number" id="ordersReceived" min="0" placeholder="0" required>
+        <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Call Center Data</div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>CC Orders (Qty)</label>
+            <input type="number" id="inpCcQty" min="0" placeholder="e.g. 10" required>
+          </div>
+          <div class="form-group">
+            <label>CC Total Amount</label>
+            <input type="number" id="inpCcAmt" min="0" step="0.01" placeholder="e.g. 200" required>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="successfulOrdersInput">Successful Orders</label>
-          <input type="number" id="successfulOrdersInput" min="0" placeholder="0" required>
+        <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.85rem; font-weight: 700; color: var(--success); text-transform: uppercase;">Branch Data (Actual)</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Branch Sales (Qty)</label>
+            <input type="number" id="inpBranchQty" min="0" placeholder="e.g. 9" required>
+          </div>
+          <div class="form-group">
+            <label>Branch Total Amount</label>
+            <input type="number" id="inpBranchAmt" min="0" step="0.01" placeholder="e.g. 190" required>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="cancelledOrdersInput">Cancelled Orders</label>
-          <input type="number" id="cancelledOrdersInput" min="0" placeholder="0" required>
-        </div>
-
-        <div class="form-group">
-          <label for="customerCalls">Customer Calls</label>
-          <input type="number" id="customerCalls" min="0" placeholder="0">
-        </div>
-
-        <div class="form-group">
-          <label for="complaints">Complaints</label>
-          <input type="number" id="complaints" min="0" placeholder="0">
-        </div>
-
-        <button type="submit" class="btn-primary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          Add Entry
-        </button>
+        <button type="submit" class="btn-add">Add Record</button>
       </form>
     </div>
 
-    <!-- Filter Panel -->
-    <div class="card">
-      <h3>Filter Data</h3>
+    <div class="panel">
+      <h3>Filters</h3>
       <div class="form-group">
-        <label>Filter by Branch</label>
-        <select id="filterBranch" onchange="filterAndRender()">
+        <label>Branch</label>
+        <select id="filterBranch" onchange="renderTable()">
           <option value="">All Branches</option>
           <option>Hamdan St</option>
           <option>Al Khalidiyah</option>
@@ -380,261 +258,151 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Filter by Date</label>
-        <input type="date" id="filterDate" onchange="filterAndRender()">
+        <label>Date</label>
+        <input type="date" id="filterDate" onchange="renderTable()">
       </div>
-      <button onclick="clearFilters()" style="width:100%; padding: 8px; background:#e9ecef; border:none; border-radius:6px; cursor:pointer;">Clear Filters</button>
     </div>
   </section>
 
-  <!-- Data Table -->
-  <section class="data-area">
-    <div class="card" style="padding: 0; overflow: hidden; height: 100%; display: flex; flex-direction: column;">
-      <div style="padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin:0; border:none;">Performance Log</h3>
-        <span id="recordCount" style="font-size: 0.85rem; color: var(--text-light);">0 records</span>
-      </div>
-      
-      <div class="table-container" style="border:none; border-radius:0; flex: 1;">
-        <table id="ordersTable">
-          <thead>
-            <tr>
-              <th class="sortable" onclick="sortData('date')">Date ↕</th>
-              <th class="sortable" onclick="sortData('branch')">Branch ↕</th>
-              <th class="sortable" onclick="sortData('received')">Recv'd ↕</th>
-              <th class="sortable" onclick="sortData('successful')">Success ↕</th>
-              <th class="sortable" onclick="sortData('cancelled')">Canc'd ↕</th>
-              <th>Calls</th>
-              <th>Comp.</th>
-              <th>Rate %</th>
-              <th style="text-align: center;">Action</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <!-- Rows generated by JS -->
-          </tbody>
-        </table>
-        <div id="emptyState" class="empty-state" style="display: none;">
-          No records found matching your filters.
-        </div>
-      </div>
-    </div>
+  <!-- Right Column: Table Report -->
+  <section class="table-wrapper">
+    <table id="reportTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Branch</th>
+          <th style="color:var(--primary)">CC Qty</th>
+          <th style="color:var(--primary)">CC Amt</th>
+          <th style="color:var(--success)">Branch Qty</th>
+          <th style="color:var(--success)">Branch Amt</th>
+          <th style="background:#fee2e2; color:#b91c1c;">Diff Qty</th>
+          <th style="background:#fee2e2; color:#b91c1c;">Diff Amt</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- Rows here -->
+      </tbody>
+    </table>
+    <div id="emptyMsg" style="padding: 2rem; text-align: center; color: #999; display: none;">No records found.</div>
   </section>
 </main>
 
-<div id="toast-container"></div>
-
 <script>
-  // State Management
-  let entries = [
-    // Sample Initial Data
-    { id: 1715001, date: '2023-10-24', branch: 'Hamdan St', received: 120, successful: 108, cancelled: 12, calls: 45, complaints: 2 },
-    { id: 1715002, date: '2023-10-24', branch: 'Al Majaz', received: 95, successful: 65, cancelled: 30, calls: 20, complaints: 5 },
-    { id: 1715003, date: '2023-10-23', branch: 'Al Barsha', received: 200, successful: 195, cancelled: 5, calls: 60, complaints: 0 },
-    { id: 1715004, date: '2023-10-23', branch: 'Muroor', received: 50, successful: 25, cancelled: 25, calls: 10, complaints: 1 },
+  // State
+  let data = [
+    // Sample Data showing discrepancy
+    { id: 1, date: '2023-10-25', branch: 'Hamdan St', ccQty: 10, ccAmt: 200.00, branchQty: 9, branchAmt: 190.00 },
+    { id: 2, date: '2023-10-25', branch: 'Al Majaz', ccQty: 15, ccAmt: 300.00, branchQty: 15, branchAmt: 300.00 },
+    { id: 3, date: '2023-10-24', branch: 'Muroor', ccQty: 5, ccAmt: 100.00, branchQty: 4, branchAmt: 80.00 }
   ];
 
-  let currentSort = { key: 'date', order: 'desc' };
-
-  // Initialization
-  document.addEventListener('DOMContentLoaded', () => {
-    // Set default date to today
-    document.getElementById('entryDate').valueAsDate = new Date();
-    filterAndRender();
-  });
-
-  // --- Core Functions ---
+  // Init
+  document.getElementById('inpDate').valueAsDate = new Date();
+  renderTable();
 
   function addEntry() {
-    // Get inputs
-    const date = document.getElementById('entryDate').value;
-    const branch = document.getElementById('branchSelect').value;
-    const received = parseInt(document.getElementById('ordersReceived').value);
-    const successful = parseInt(document.getElementById('successfulOrdersInput').value);
-    const cancelled = parseInt(document.getElementById('cancelledOrdersInput').value);
-    const calls = parseInt(document.getElementById('customerCalls').value) || 0;
-    const complaints = parseInt(document.getElementById('complaints').value) || 0;
+    const date = document.getElementById('inpDate').value;
+    const branch = document.getElementById('inpBranch').value;
+    const ccQty = parseInt(document.getElementById('inpCcQty').value) || 0;
+    const ccAmt = parseFloat(document.getElementById('inpCcAmt').value) || 0;
+    const branchQty = parseInt(document.getElementById('inpBranchQty').value) || 0;
+    const branchAmt = parseFloat(document.getElementById('inpBranchAmt').value) || 0;
 
-    // Validation
-    if (!date || !branch) {
-      showToast('Please fill in Date and Branch.', 'error');
-      return;
-    }
-    
-    if (successful + cancelled > received) {
-      showToast(`Error: Success + Cancelled (${successful + cancelled}) cannot exceed Total Received (${received}).`, 'error');
-      return;
-    }
-
-    // Add to state
-    const newEntry = {
+    data.push({
       id: Date.now(),
-      date,
-      branch,
-      received,
-      successful,
-      cancelled,
-      calls,
-      complaints
-    };
+      date, branch, ccQty, ccAmt, branchQty, branchAmt
+    });
 
-    entries.push(newEntry);
-    
-    // Reset Form partly (keep date/branch for rapid entry usually preferred)
-    document.getElementById('ordersReceived').value = '';
-    document.getElementById('successfulOrdersInput').value = '';
-    document.getElementById('cancelledOrdersInput').value = '';
-    document.getElementById('customerCalls').value = '';
-    document.getElementById('complaints').value = '';
+    // Reset numeric fields only
+    document.getElementById('inpCcQty').value = '';
+    document.getElementById('inpCcAmt').value = '';
+    document.getElementById('inpBranchQty').value = '';
+    document.getElementById('inpBranchAmt').value = '';
 
-    showToast('Entry added successfully!', 'success');
-    filterAndRender();
+    renderTable();
+    alert("Record Added Successfully!");
   }
 
-  function deleteEntry(id) {
-    if(confirm('Are you sure you want to delete this record?')) {
-      entries = entries.filter(entry => entry.id !== id);
-      showToast('Record deleted.', 'success');
-      filterAndRender();
+  function deleteRow(id) {
+    if(confirm("Delete this record?")) {
+      data = data.filter(d => d.id !== id);
+      renderTable();
     }
   }
 
-  // --- Filtering & Sorting ---
-
-  function getFilteredEntries() {
-    const branchFilter = document.getElementById('filterBranch').value;
-    const dateFilter = document.getElementById('filterDate').value;
-
-    return entries.filter(entry => {
-      const matchBranch = branchFilter === "" || entry.branch === branchFilter;
-      const matchDate = dateFilter === "" || entry.date === dateFilter;
-      return matchBranch && matchDate;
-    });
-  }
-
-  function sortData(key) {
-    // Toggle sort order
-    if (currentSort.key === key) {
-      currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
-    } else {
-      currentSort.key = key;
-      currentSort.order = 'desc'; // Default to desc for new columns
-    }
-    filterAndRender();
-  }
-
-  function clearFilters() {
-    document.getElementById('filterBranch').value = "";
-    document.getElementById('filterDate').value = "";
-    filterAndRender();
-  }
-
-  // --- Rendering ---
-
-  function filterAndRender() {
-    let data = getFilteredEntries();
-
-    // Sorting
-    data.sort((a, b) => {
-      let valA = a[currentSort.key];
-      let valB = b[currentSort.key];
-
-      if (typeof valA === 'string') {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-
-      if (valA < valB) return currentSort.order === 'asc' ? -1 : 1;
-      if (valA > valB) return currentSort.order === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    renderTable(data);
-    updateKPIs(data);
-  }
-
-  function renderTable(data) {
+  function renderTable() {
     const tbody = document.getElementById('tableBody');
-    const emptyState = document.getElementById('emptyState');
-    const countLabel = document.getElementById('recordCount');
+    const fBranch = document.getElementById('filterBranch').value;
+    const fDate = document.getElementById('filterDate').value;
+    const emptyMsg = document.getElementById('emptyMsg');
 
     tbody.innerHTML = '';
-    countLabel.innerText = `${data.length} records`;
 
-    if (data.length === 0) {
-      emptyState.style.display = 'block';
-      return;
+    let filtered = data.filter(d => {
+      return (fBranch === '' || d.branch === fBranch) &&
+             (fDate === '' || d.date === fDate);
+    });
+
+    if(filtered.length === 0) {
+      emptyMsg.style.display = 'block';
     } else {
-      emptyState.style.display = 'none';
+      emptyMsg.style.display = 'none';
     }
 
-    data.forEach(entry => {
-      const row = document.createElement('tr');
-      
-      // Calculate Rate
-      const rate = entry.received > 0 ? Math.round((entry.successful / entry.received) * 100) : 0;
-      let badgeClass = 'badge-green';
-      if (rate < 80) badgeClass = 'badge-red';
-      else if (rate < 90) badgeClass = 'badge-yellow';
+    let totals = { ccQty: 0, branchQty: 0, ccAmt: 0, branchAmt: 0 };
 
-      row.innerHTML = `
-        <td>${entry.date}</td>
-        <td><strong>${entry.branch}</strong></td>
-        <td>${entry.received}</td>
-        <td style="color:var(--primary); font-weight:600;">${entry.successful}</td>
-        <td style="color:var(--danger);">${entry.cancelled}</td>
-        <td>${entry.calls}</td>
-        <td>${entry.complaints > 0 ? `<span style="color:var(--danger); font-weight:bold;">${entry.complaints}</span>` : entry.complaints}</td>
-        <td><span class="badge ${badgeClass}">${rate}%</span></td>
-        <td style="text-align: center;">
-          <button class="btn-icon" onclick="deleteEntry(${entry.id})" title="Delete">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+    filtered.forEach(row => {
+      const diffQty = row.ccQty - row.branchQty;
+      const diffAmt = parseFloat((row.ccAmt - row.branchAmt).toFixed(2));
+
+      totals.ccQty += row.ccQty;
+      totals.branchQty += row.branchQty;
+      totals.ccAmt += row.ccAmt;
+      totals.branchAmt += row.branchAmt;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.date}</td>
+        <td><strong>${row.branch}</strong></td>
+        <td>${row.ccQty}</td>
+        <td>${row.ccAmt.toFixed(2)}</td>
+        <td>${row.branchQty}</td>
+        <td>${row.branchAmt.toFixed(2)}</td>
+        <td class="${diffQty > 0 ? 'diff-positive' : 'diff-zero'}">${diffQty > 0 ? '-' + diffQty : diffQty}</td>
+        <td class="${diffAmt > 0 ? 'diff-positive' : 'diff-zero'}">${diffAmt > 0 ? '-' + diffAmt.toFixed(2) : diffAmt.toFixed(2)}</td>
+        <td>
+          <button class="action-btn" onclick="deleteRow(${row.id})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           </button>
         </td>
       `;
-      tbody.appendChild(row);
+      tbody.appendChild(tr);
     });
+
+    updateKPIs(totals);
   }
 
-  function updateKPIs(data) {
-    const total = data.reduce((sum, item) => sum + item.received, 0);
-    const successful = data.reduce((sum, item) => sum + item.successful, 0);
-    const cancelled = data.reduce((sum, item) => sum + item.cancelled, 0);
+  function updateKPIs(t) {
+    document.getElementById('kpiCcQty').innerText = t.ccQty;
+    document.getElementById('kpiBranchQty').innerText = t.branchQty;
     
-    const overallRate = total > 0 ? Math.round((successful / total) * 100) : 0;
-    
-    // Animate Numbers (Simple implementation)
-    document.getElementById('kpiTotal').innerText = total.toLocaleString();
-    document.getElementById('kpiSuccess').innerText = successful.toLocaleString();
-    document.getElementById('kpiCancelled').innerText = cancelled.toLocaleString();
-    
-    const rateElem = document.getElementById('kpiRate');
-    rateElem.innerText = overallRate + '%';
-    rateElem.style.color = overallRate >= 90 ? '#4cc9f0' : (overallRate >= 80 ? '#ffd166' : '#ef476f');
-  }
+    const diffQty = t.ccQty - t.branchQty;
+    const diffAmt = t.ccAmt - t.branchAmt;
 
-  // --- Utilities ---
+    const diffQtyElem = document.getElementById('kpiDiffQty');
+    const diffAmtElem = document.getElementById('kpiDiffAmt');
 
-  function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    let icon = '';
-    if (type === 'success') icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-    else icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+    diffQtyElem.innerText = diffQty;
+    diffAmtElem.innerText = diffAmt.toFixed(2);
 
-    toast.innerHTML = `${icon} <span>${message}</span>`;
-    
-    container.appendChild(toast);
-
-    // Remove after 3 seconds
-    setTimeout(() => {
-      toast.style.animation = 'fadeOut 0.3s ease-out forwards';
-      toast.addEventListener('animationend', () => {
-        toast.remove();
-      });
-    }, 3000);
+    if(diffQty > 0) {
+      diffQtyElem.classList.add('text-danger');
+      diffQtyElem.classList.remove('text-success');
+    } else {
+      diffQtyElem.classList.add('text-success');
+      diffQtyElem.classList.remove('text-danger');
+    }
   }
 </script>
 
