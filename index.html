@@ -3,407 +3,507 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Call Center vs Branch Reconciliation</title>
+<title>Operations Audit & Control</title>
 <style>
   :root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --secondary: #f59e0b;
-    --bg-body: #f1f5f9;
-    --bg-card: #ffffff;
-    --text-main: #1e293b;
-    --text-light: #64748b;
-    --border: #e2e8f0;
-    --success: #10b981;
-    --success-bg: #d1fae5;
+    --primary: #0f172a; /* Navy Blue */
+    --accent: #3b82f6; /* Blue */
     --danger: #ef4444;
-    --danger-bg: #fee2e2;
+    --success: #10b981;
     --warning: #f59e0b;
-    --warning-bg: #fef3c7;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --radius: 12px;
+    --bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --text: #334155;
+    --border: #e2e8f0;
   }
 
-  * { box-sizing: border-box; outline: none; }
+  * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--text); display: flex; height: 100vh; }
 
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+  /* Sidebar */
+  aside { width: 260px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+  .brand { padding: 1.5rem; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #334155; display: flex; gap: 10px; align-items: center; }
+  .nav { padding: 1rem; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; opacity: 0.8; }
+  .nav:hover { background: #1e293b; opacity: 1; }
+  .nav.active { border-left-color: var(--accent); background: #1e293b; opacity: 1; font-weight: bold; }
 
-  header {
-    background: var(--bg-card);
-    padding: 1rem 2rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  /* Main */
+  main { flex: 1; padding: 2rem; overflow-y: auto; }
+  .module { display: none; animation: slide 0.3s; }
+  .module.active { display: block; }
+  @keyframes slide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .brand { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+  /* Cards */
+  .card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
   
-  main {
-    padding: 2rem;
-    max-width: 1600px;
-    margin: 0 auto;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 2rem;
-  }
-
-  @media (max-width: 1200px) {
-    main { grid-template-columns: 1fr; }
-  }
-
-  /* KPI Cards */
-  .kpi-grid {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .kpi-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-  }
+  h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
   
-  .kpi-title { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-  .kpi-value { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
-  .kpi-sub { font-size: 0.8rem; color: var(--text-light); }
+  /* Inputs */
+  label { display: block; margin: 8px 0 4px; font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .input-group { background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); }
+  input, select, textarea { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; }
+  input:focus { border-color: var(--accent); outline: none; }
   
-  .text-danger { color: var(--danger); }
-  .text-success { color: var(--success); }
-  .text-primary { color: var(--primary); }
+  /* Buttons */
+  .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+  .btn-primary { background: var(--accent); color: white; width: 100%; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-success { background: var(--success); color: white; }
 
-  /* Forms & Panels */
-  .panel {
-    background: var(--bg-card);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
-    height: fit-content;
-  }
-
-  h3 { margin-top: 0; font-size: 1.1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; color: var(--text-main); }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .form-group { margin-bottom: 1rem; }
-  .form-group.full { grid-column: 1 / -1; }
-
-  label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
-  input, select {
-    width: 100%;
-    padding: 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
-  }
-  input:focus, select:focus { border-color: var(--primary); ring: 2px solid var(--primary); }
-
-  button.btn-add {
-    width: 100%;
-    padding: 0.8rem;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
-  button.btn-add:hover { background: var(--primary-dark); }
-
-  /* Table */
-  .table-wrapper { overflow-x: auto; background: white; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+  /* Tables */
   table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  thead { background: #f1f5f9; font-weight: 600; }
+  .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
   
-  thead { background: #f8fafc; }
-  th { font-weight: 600; color: var(--text-light); font-size: 0.8rem; text-transform: uppercase; }
-  
-  tbody tr:hover { background: #f8fafc; }
+  /* Analysis Colors */
+  .good { color: var(--success); font-weight: bold; }
+  .bad { color: var(--danger); font-weight: bold; background: #fee2e2; padding: 2px 6px; border-radius: 4px; }
+  .neutral { color: var(--text); }
 
-  .diff-positive { background: #fee2e2; color: #b91c1c; font-weight: 700; } /* Red if discrepancy exists */
-  .diff-zero { background: #d1fae5; color: #047857; font-weight: 700; } /* Green if match */
+  /* Custom Logic Styles */
+  .formula-box { background: #eff6ff; border: 1px dashed var(--accent); padding: 10px; margin-bottom: 15px; font-size: 0.9rem; color: #1e40af; }
+  .ghost-cancel-highlight { background-color: #fef2f2; border-left: 4px solid var(--danger); }
 
-  .badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-  .badge-red { background: var(--danger-bg); color: var(--danger); }
-  .badge-green { background: var(--success-bg); color: var(--success); }
-
-  .action-btn {
-    background: none; border: none; cursor: pointer; color: var(--text-light);
-    padding: 5px; border-radius: 4px;
-  }
-  .action-btn:hover { color: var(--danger); background: var(--danger-bg); }
+  /* Filter Bar */
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
 </style>
 </head>
 <body>
 
-<header>
+<aside>
   <div class="brand">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-    Delivery Reconciliation
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    Audit Pro
   </div>
-</header>
+  <div class="nav active" onclick="showTab('rec')">Reconciliation</div>
+  <div class="nav" onclick="showTab('comp')">Complaints Manager</div>
+  <div class="nav" onclick="showTab('report')">Analysis & Reports</div>
+</aside>
 
 <main>
-  <!-- KPI Dashboard -->
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-title">CC Orders (Received)</div>
-      <div class="kpi-value text-primary" id="kpiCcQty">0</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-title">Branch Sales (Actual)</div>
-      <div class="kpi-value text-success" id="kpiBranchQty">0</div>
-    </div>
-    <div class="kpi-card" style="border-left: 5px solid var(--danger);">
-      <div class="kpi-title">Discrepancy (Qty)</div>
-      <div class="kpi-value text-danger" id="kpiDiffQty">0</div>
-      <div class="kpi-sub">Orders missing at Branch</div>
-    </div>
-    <div class="kpi-card" style="border-left: 5px solid var(--secondary);">
-      <div class="kpi-title">Discrepancy ($)</div>
-      <div class="kpi-value text-danger" id="kpiDiffAmt">0</div>
-      <div class="kpi-sub">Financial Loss</div>
-    </div>
-  </div>
-
-  <!-- Left Column: Input Form -->
-  <section>
-    <div class="panel">
-      <h3>Add Daily Entry</h3>
-      <form id="dataForm" onsubmit="event.preventDefault(); addEntry();">
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="inpDate" required>
-        </div>
-        <div class="form-group">
-          <label>Branch</label>
-          <select id="inpBranch" required>
-            <option>Hamdan St</option>
-            <option>Al Khalidiyah</option>
-            <option>Shabiya 11</option>
-            <option>Muroor</option>
-            <option>Al Majaz</option>
-            <option>Al Barsha</option>
-            <option>Al Satwa</option>
-            <option>Al Rigga</option>
+  <!-- MODULE 1: RECONCILIATION -->
+  <div id="rec" class="module active">
+    <h2>Smart Order Reconciliation</h2>
+    <div class="grid-2">
+      <!-- Input Form -->
+      <div class="card">
+        <h3>Daily Data Entry</h3>
+        <div class="input-group">
+          <label>Date & Branch</label>
+          <input type="date" id="recDate">
+          <select id="recBranch">
+            <option>Hamdan St</option><option>Al Khalidiyah</option><option>Shabiya 11</option>
+            <option>Muroor</option><option>Al Majaz</option><option>Al Barsha</option>
+            <option>Al Satwa</option><option>Al Rigga</option>
           </select>
         </div>
 
-        <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Call Center Data</div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>CC Orders (Qty)</label>
-            <input type="number" id="inpCcQty" min="0" placeholder="e.g. 10" required>
-          </div>
-          <div class="form-group">
-            <label>CC Total Amount</label>
-            <input type="number" id="inpCcAmt" min="0" step="0.01" placeholder="e.g. 200" required>
-          </div>
+        <!-- CC Data -->
+        <div class="input-group" style="border-left: 4px solid var(--accent);">
+          <label>Call Center Data</label>
+          <label>Total Orders Received</label>
+          <input type="number" id="ccTotal" placeholder="0" oninput="calcPreview()">
+          <label>Pick Up Orders (Direct)</label>
+          <input type="number" id="ccPickup" placeholder="0" oninput="calcPreview()">
+          <label>Authorised CC Cancels (Known)</label>
+          <input type="number" id="ccCancel" placeholder="0" oninput="calcPreview()">
         </div>
 
-        <div style="margin: 1.5rem 0 0.5rem 0; font-size: 0.85rem; font-weight: 700; color: var(--success); text-transform: uppercase;">Branch Data (Actual)</div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Branch Sales (Qty)</label>
-            <input type="number" id="inpBranchQty" min="0" placeholder="e.g. 9" required>
-          </div>
-          <div class="form-group">
-            <label>Branch Total Amount</label>
-            <input type="number" id="inpBranchAmt" min="0" step="0.01" placeholder="e.g. 190" required>
-          </div>
+        <!-- Branch Data -->
+        <div class="input-group" style="border-left: 4px solid var(--success);">
+          <label>Branch Actuals</label>
+          <label>Actual Sales (Qty)</label>
+          <input type="number" id="branchSales" placeholder="0" oninput="calcPreview()">
         </div>
 
-        <button type="submit" class="btn-add">Add Record</button>
-      </form>
+        <div class="formula-box" id="livePreview">
+          Expected: 0 | Actual: 0 | Ghost Cancel: 0
+        </div>
+        <button class="btn btn-primary" onclick="addRecon()">Save Record</button>
+      </div>
+
+      <!-- Recent History -->
+      <div class="card">
+        <h3>Recent Activity Log</h3>
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Branch</th><th>Exp</th><th>Act</th><th>Ghost Cancel</th></tr>
+          </thead>
+          <tbody id="recTable"></tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
-    <div class="panel">
-      <h3>Filters</h3>
-      <div class="form-group">
+  <!-- MODULE 2: COMPLAINTS -->
+  <div id="comp" class="module">
+    <h2>Professional Complaint Management</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Log New Issue</h3>
+        <label>Customer / Order #</label>
+        <input type="text" id="compCust" placeholder="Name or Order ID">
         <label>Branch</label>
-        <select id="filterBranch" onchange="renderTable()">
-          <option value="">All Branches</option>
-          <option>Hamdan St</option>
-          <option>Al Khalidiyah</option>
-          <option>Shabiya 11</option>
-          <option>Muroor</option>
-          <option>Al Majaz</option>
-          <option>Al Barsha</option>
-          <option>Al Satwa</option>
-          <option>Al Rigga</option>
+        <select id="compBranch">
+          <option>Hamdan St</option><option>Al Khalidiyah</option><option>Shabiya 11</option>
+          <option>Muroor</option><option>Al Majaz</option><option>Al Barsha</option>
+          <option>Al Satwa</option><option>Al Rigga</option>
+        </select>
+        <label>Issue Type</label>
+        <select id="compType">
+          <option>Quality Issue</option><option>Delivery Delay</option><option>Wrong Order</option><option>Rude Staff</option><option>Missing Item</option>
+        </select>
+        <label>Details</label>
+        <textarea id="compDesc" rows="3"></textarea>
+        <button class="btn btn-primary" onclick="addComplaint()">Open Ticket</button>
+      </div>
+
+      <div class="card">
+        <h3>Active Tickets Dashboard</h3>
+        <div class="filter-bar">
+          <label>View:</label>
+          <select id="compFilter" onchange="renderComps()">
+            <option value="active">Active Only</option>
+            <option value="resolved">Resolved</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Ref</th><th>Branch</th><th>Issue</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody id="compTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 3: REPORTS -->
+  <div id="report" class="module">
+    <h2>Branch Analysis & Reports</h2>
+    
+    <!-- Report Controls -->
+    <div class="card" style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+      <div>
+        <label>Report Type</label>
+        <select id="reportType" onchange="updateReportUI()">
+          <option value="daily">Daily Summary</option>
+          <option value="weekly">Weekly Summary</option>
+          <option value="monthly">Monthly Summary</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Date</label>
-        <input type="date" id="filterDate" onchange="renderTable()">
+      
+      <div id="dateInputDaily">
+        <label>Select Date</label>
+        <input type="date" id="reportDate" onchange="generateReport()">
+      </div>
+      
+      <div id="monthInput" style="display:none;">
+        <label>Select Month</label>
+        <input type="month" id="reportMonth" onchange="generateReport()">
       </div>
     </div>
-  </section>
 
-  <!-- Right Column: Table Report -->
-  <section class="table-wrapper">
-    <table id="reportTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Branch</th>
-          <th style="color:var(--primary)">CC Qty</th>
-          <th style="color:var(--primary)">CC Amt</th>
-          <th style="color:var(--success)">Branch Qty</th>
-          <th style="color:var(--success)">Branch Amt</th>
-          <th style="background:#fee2e2; color:#b91c1c;">Diff Qty</th>
-          <th style="background:#fee2e2; color:#b91c1c;">Diff Amt</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <!-- Rows here -->
-      </tbody>
-    </table>
-    <div id="emptyMsg" style="padding: 2rem; text-align: center; color: #999; display: none;">No records found.</div>
-  </section>
+    <!-- Main Report Table -->
+    <div class="card">
+      <h3>Performance Overview</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Branch</th>
+            <th>Total CC Orders</th>
+            <th>Pick Up</th>
+            <th>Legitimate Cancel</th>
+            <th style="color:var(--danger)">Ghost Cancel (Alert)</th>
+            <th>Active Complaints</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody id="reportTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Ghost Cancel Audit (Special Focus) -->
+    <div class="card ghost-cancel-highlight">
+      <h3 style="color:var(--danger)">Ghost Cancel Audit (Branches cancelling without CC info)</h3>
+      <p>This report lists branches that cancelled orders internally without updating the Call Center system.</p>
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Branch</th><th>Missing Orders (Qty)</th><th>Loss Potential</th></tr>
+        </thead>
+        <tbody id="auditTable"></tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
 
+<!-- Modal for Resolution -->
+<div id="resModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:8px; width:400px;">
+    <h3>Resolve Ticket #<span id="modId"></span></h3>
+    <p style="color:#666; font-size:0.9rem;">Action Taken is Mandatory to close.</p>
+    <textarea id="modAction" rows="3" style="width:100%; margin-bottom:10px;" placeholder="Describe resolution..."></textarea>
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" onclick="confirmResolve()">Resolve & Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // State
-  let data = [
-    // Sample Data showing discrepancy
-    { id: 1, date: '2023-10-25', branch: 'Hamdan St', ccQty: 10, ccAmt: 200.00, branchQty: 9, branchAmt: 190.00 },
-    { id: 2, date: '2023-10-25', branch: 'Al Majaz', ccQty: 15, ccAmt: 300.00, branchQty: 15, branchAmt: 300.00 },
-    { id: 3, date: '2023-10-24', branch: 'Muroor', ccQty: 5, ccAmt: 100.00, branchQty: 4, branchAmt: 80.00 }
-  ];
+  // --- DATA ---
+  let recData = [];
+  let compData = [];
+  let currentResolveId = null;
 
-  // Init
-  document.getElementById('inpDate').valueAsDate = new Date();
-  renderTable();
+  const branches = ['Hamdan St', 'Al Khalidiyah', 'Shabiya 11', 'Muroor', 'Al Majaz', 'Al Barsha', 'Al Satwa', 'Al Rigga'];
 
-  function addEntry() {
-    const date = document.getElementById('inpDate').value;
-    const branch = document.getElementById('inpBranch').value;
-    const ccQty = parseInt(document.getElementById('inpCcQty').value) || 0;
-    const ccAmt = parseFloat(document.getElementById('inpCcAmt').value) || 0;
-    const branchQty = parseInt(document.getElementById('inpBranchQty').value) || 0;
-    const branchAmt = parseFloat(document.getElementById('inpBranchAmt').value) || 0;
+  // --- INIT ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('recDate').value = today;
+    document.getElementById('reportDate').value = today;
+    // Initial Render
+    renderRecTable();
+    renderComps();
+    generateReport();
+  });
 
-    data.push({
+  function showTab(id) {
+    document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+    document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    if(id === 'report') generateReport();
+  }
+
+  // --- RECONCILIATION LOGIC ---
+  function calcPreview() {
+    const cc = parseInt(document.getElementById('ccTotal').value) || 0;
+    const pick = parseInt(document.getElementById('ccPickup').value) || 0;
+    const canc = parseInt(document.getElementById('ccCancel').value) || 0;
+    const act = parseInt(document.getElementById('branchSales').value) || 0;
+
+    // Formula: (CC - Cancel + Pickup) - Actual = Ghost Cancel
+    const expected = (cc - canc) + pick;
+    const ghost = expected - act;
+
+    const preview = document.getElementById('livePreview');
+    preview.innerHTML = `
+      <div>Expected for Branch: <strong>${expected}</strong></div>
+      <div>Actual Sales: <strong>${act}</strong></div>
+      <hr style="margin:5px 0; border:0; border-top:1px solid #bfdbfe;">
+      <div>Ghost Cancel (Branch Error): 
+        <span style="${ghost > 0 ? 'color:red; font-weight:bold' : 'color:green'}">${ghost} Orders</span>
+      </div>
+    `;
+  }
+
+  function addRecon() {
+    const cc = parseInt(document.getElementById('ccTotal').value) || 0;
+    const pick = parseInt(document.getElementById('ccPickup').value) || 0;
+    const canc = parseInt(document.getElementById('ccCancel').value) || 0;
+    const act = parseInt(document.getElementById('branchSales').value) || 0;
+    
+    if(cc === 0 && act === 0) return alert("Please enter data");
+
+    const expected = (cc - canc) + pick;
+    const ghost = expected - act;
+
+    recData.push({
       id: Date.now(),
-      date, branch, ccQty, ccAmt, branchQty, branchAmt
+      date: document.getElementById('recDate').value,
+      branch: document.getElementById('recBranch').value,
+      ccTotal: cc,
+      pickUp: pick,
+      ccCancel: canc,
+      branchSales: act,
+      ghostCancel: ghost
     });
 
-    // Reset numeric fields only
-    document.getElementById('inpCcQty').value = '';
-    document.getElementById('inpCcAmt').value = '';
-    document.getElementById('inpBranchQty').value = '';
-    document.getElementById('inpBranchAmt').value = '';
-
-    renderTable();
-    alert("Record Added Successfully!");
+    // Reset inputs except Date/Branch
+    document.getElementById('ccTotal').value = '';
+    document.getElementById('ccPickup').value = '';
+    document.getElementById('ccCancel').value = '';
+    document.getElementById('branchSales').value = '';
+    calcPreview();
+    renderRecTable();
+    alert("Record Saved");
   }
 
-  function deleteRow(id) {
-    if(confirm("Delete this record?")) {
-      data = data.filter(d => d.id !== id);
-      renderTable();
-    }
+  function renderRecTable() {
+    const tbody = document.getElementById('recTable');
+    tbody.innerHTML = '';
+    // Show last 5
+    recData.slice().reverse().slice(0, 5).forEach(r => {
+      const expected = (r.ccTotal - r.ccCancel) + r.pickUp;
+      const rowClass = r.ghostCancel > 0 ? 'bad' : 'good';
+      
+      tbody.innerHTML += `
+        <tr>
+          <td>${r.date}</td>
+          <td>${r.branch}</td>
+          <td>${expected}</td>
+          <td>${r.branchSales}</td>
+          <td class="${rowClass}">${r.ghostCancel > 0 ? '-' + r.ghostCancel : '0'}</td>
+        </tr>
+      `;
+    });
   }
 
-  function renderTable() {
-    const tbody = document.getElementById('tableBody');
-    const fBranch = document.getElementById('filterBranch').value;
-    const fDate = document.getElementById('filterDate').value;
-    const emptyMsg = document.getElementById('emptyMsg');
+  // --- COMPLAINTS LOGIC ---
+  function addComplaint() {
+    const cust = document.getElementById('compCust').value;
+    if(!cust) return alert("Customer Name/ID required");
+    
+    compData.push({
+      id: Date.now(),
+      date: new Date().toISOString().split('T')[0], // Simplified date for demo
+      timestamp: new Date().getTime(),
+      branch: document.getElementById('compBranch').value,
+      type: document.getElementById('compType').value,
+      cust: cust,
+      status: 'Open',
+      action: ''
+    });
 
+    document.getElementById('compCust').value = '';
+    document.getElementById('compDesc').value = '';
+    renderComps();
+    alert("Complaint Ticket Created");
+  }
+
+  function renderComps() {
+    const filter = document.getElementById('compFilter').value;
+    const tbody = document.getElementById('compTable');
     tbody.innerHTML = '';
 
-    let filtered = data.filter(d => {
-      return (fBranch === '' || d.branch === fBranch) &&
-             (fDate === '' || d.date === fDate);
-    });
+    let list = compData.slice().reverse();
+    if(filter === 'active') list = list.filter(c => c.status !== 'Resolved');
+    if(filter === 'resolved') list = list.filter(c => c.status === 'Resolved');
 
-    if(filtered.length === 0) {
-      emptyMsg.style.display = 'block';
-    } else {
-      emptyMsg.style.display = 'none';
-    }
+    list.forEach(c => {
+      let badge = c.status === 'Open' ? 'status-badge' : (c.status === 'Resolved' ? 'good' : 'neutral');
+      let btn = c.status === 'Open' 
+        ? `<button class="btn btn-sm btn-primary" style="font-size:0.7rem; padding:4px 8px;" onclick="openResolve(${c.id})">Solve</button>`
+        : `<span style="color:green">Closed</span>`;
 
-    let totals = { ccQty: 0, branchQty: 0, ccAmt: 0, branchAmt: 0 };
-
-    filtered.forEach(row => {
-      const diffQty = row.ccQty - row.branchQty;
-      const diffAmt = parseFloat((row.ccAmt - row.branchAmt).toFixed(2));
-
-      totals.ccQty += row.ccQty;
-      totals.branchQty += row.branchQty;
-      totals.ccAmt += row.ccAmt;
-      totals.branchAmt += row.branchAmt;
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.date}</td>
-        <td><strong>${row.branch}</strong></td>
-        <td>${row.ccQty}</td>
-        <td>${row.ccAmt.toFixed(2)}</td>
-        <td>${row.branchQty}</td>
-        <td>${row.branchAmt.toFixed(2)}</td>
-        <td class="${diffQty > 0 ? 'diff-positive' : 'diff-zero'}">${diffQty > 0 ? '-' + diffQty : diffQty}</td>
-        <td class="${diffAmt > 0 ? 'diff-positive' : 'diff-zero'}">${diffAmt > 0 ? '-' + diffAmt.toFixed(2) : diffAmt.toFixed(2)}</td>
-        <td>
-          <button class="action-btn" onclick="deleteRow(${row.id})">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          </button>
-        </td>
+      tbody.innerHTML += `
+        <tr>
+          <td>#${c.id.toString().slice(-4)}</td>
+          <td>${c.branch}</td>
+          <td>${c.type} (${c.cust})</td>
+          <td><span class="status-badge" style="background:${c.status==='Open'?'#fee2e2':'#d1fae5'}; color:${c.status==='Open'?'#991b1b':'#065f46'}">${c.status}</span></td>
+          <td>${btn}</td>
+        </tr>
       `;
-      tbody.appendChild(tr);
+    });
+  }
+
+  function openResolve(id) {
+    currentResolveId = id;
+    document.getElementById('modId').innerText = id.toString().slice(-4);
+    document.getElementById('modAction').value = '';
+    document.getElementById('resModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('resModal').style.display = 'none';
+  }
+
+  function confirmResolve() {
+    const action = document.getElementById('modAction').value;
+    if(!action || action.length < 5) return alert("Please describe the resolution (min 5 chars).");
+    
+    const c = compData.find(x => x.id === currentResolveId);
+    c.status = 'Resolved';
+    c.action = action;
+    closeModal();
+    renderComps();
+  }
+
+  // --- REPORTS LOGIC ---
+  function updateReportUI() {
+    const type = document.getElementById('reportType').value;
+    document.getElementById('dateInputDaily').style.display = type === 'daily' ? 'block' : 'none';
+    document.getElementById('monthInput').style.display = type === 'monthly' ? 'block' : 'none';
+    generateReport();
+  }
+
+  function generateReport() {
+    const type = document.getElementById('reportType').value;
+    const tbody = document.getElementById('reportTable');
+    const auditTbody = document.getElementById('auditTable');
+    tbody.innerHTML = '';
+    auditTbody.innerHTML = '';
+
+    // Filter Data Logic
+    let filteredRec = [];
+    let filteredComp = [];
+
+    if(type === 'daily') {
+      const d = document.getElementById('reportDate').value;
+      filteredRec = recData.filter(r => r.date === d);
+      filteredComp = compData.filter(c => c.date === d); // Simplified date match
+    } else if (type === 'monthly') {
+      const m = document.getElementById('reportMonth').value; // YYYY-MM
+      filteredRec = recData.filter(r => r.date.startsWith(m));
+      filteredComp = compData.filter(c => c.date.startsWith(m));
+    } else if (type === 'weekly') {
+      // Last 7 days logic
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      filteredRec = recData.filter(r => new Date(r.date) >= oneWeekAgo);
+      filteredComp = compData.filter(c => new Date(c.date) >= oneWeekAgo);
+    }
+
+    // Build Report per Branch
+    branches.forEach(br => {
+      // Aggregate Reconciliation Data
+      const brRec = filteredRec.filter(r => r.branch === br);
+      const totalCc = brRec.reduce((sum, r) => sum + r.ccTotal, 0);
+      const totalPick = brRec.reduce((sum, r) => sum + r.pickUp, 0);
+      const totalCancel = brRec.reduce((sum, r) => sum + r.ccCancel, 0);
+      const ghostCancels = brRec.reduce((sum, r) => sum + (r.ghostCancel > 0 ? r.ghostCancel : 0), 0);
+      
+      // Aggregate Complaint Data
+      const brComps = filteredComp.filter(c => c.branch === br && c.status !== 'Resolved');
+      const activeComps = brComps.length;
+
+      // Calc Score
+      const score = Math.max(0, 100 - (ghostCancels * 5) - (activeComps * 10));
+      const scoreClass = score > 80 ? 'good' : (score > 50 ? 'neutral' : 'bad');
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${br}</td>
+          <td>${totalCc}</td>
+          <td>${totalPick}</td>
+          <td>${totalCancel}</td>
+          <td style="${ghostCancels > 0 ? 'color:red; font-weight:bold;' : ''}">${ghostCancels}</td>
+          <td>${activeComps}</td>
+          <td class="${scoreClass}">${score}/100</td>
+        </tr>
+      `;
     });
 
-    updateKPIs(totals);
+    // Build Audit Table (Only Ghost Cancels)
+    filteredRec.filter(r => r.ghostCancel > 0).forEach(r => {
+      auditTbody.innerHTML += `
+        <tr>
+          <td>${r.date}</td>
+          <td>${r.branch}</td>
+          <td style="color:red; font-weight:bold;">${r.ghostCancel}</td>
+          <td>High</td>
+        </tr>
+      `;
+    });
   }
 
-  function updateKPIs(t) {
-    document.getElementById('kpiCcQty').innerText = t.ccQty;
-    document.getElementById('kpiBranchQty').innerText = t.branchQty;
-    
-    const diffQty = t.ccQty - t.branchQty;
-    const diffAmt = t.ccAmt - t.branchAmt;
-
-    const diffQtyElem = document.getElementById('kpiDiffQty');
-    const diffAmtElem = document.getElementById('kpiDiffAmt');
-
-    diffQtyElem.innerText = diffQty;
-    diffAmtElem.innerText = diffAmt.toFixed(2);
-
-    if(diffQty > 0) {
-      diffQtyElem.classList.add('text-danger');
-      diffQtyElem.classList.remove('text-success');
-    } else {
-      diffQtyElem.classList.add('text-success');
-      diffQtyElem.classList.remove('text-danger');
-    }
-  }
 </script>
 
 </body>
