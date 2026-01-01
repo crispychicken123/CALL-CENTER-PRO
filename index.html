@@ -3,507 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operations Audit & Control</title>
+<title>Call Center & Delivery Dashboard by Branch</title>
 <style>
-  :root {
-    --primary: #0f172a; /* Navy Blue */
-    --accent: #3b82f6; /* Blue */
-    --danger: #ef4444;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --bg: #f1f5f9;
-    --card-bg: #ffffff;
-    --text: #334155;
-    --border: #e2e8f0;
-  }
-
-  * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-  body { margin: 0; background: var(--bg); color: var(--text); display: flex; height: 100vh; }
-
-  /* Sidebar */
-  aside { width: 260px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
-  .brand { padding: 1.5rem; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #334155; display: flex; gap: 10px; align-items: center; }
-  .nav { padding: 1rem; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; opacity: 0.8; }
-  .nav:hover { background: #1e293b; opacity: 1; }
-  .nav.active { border-left-color: var(--accent); background: #1e293b; opacity: 1; font-weight: bold; }
-
-  /* Main */
-  main { flex: 1; padding: 2rem; overflow-y: auto; }
-  .module { display: none; animation: slide 0.3s; }
-  .module.active { display: block; }
-  @keyframes slide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* Cards */
-  .card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 2rem; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
-  
-  h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-  
-  /* Inputs */
-  label { display: block; margin: 8px 0 4px; font-size: 0.85rem; font-weight: 700; color: var(--text); }
-  .input-group { background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); }
-  input, select, textarea { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; }
-  input:focus { border-color: var(--accent); outline: none; }
-  
-  /* Buttons */
-  .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-  .btn-primary { background: var(--accent); color: white; width: 100%; }
-  .btn-primary:hover { background: #2563eb; }
-  .btn-danger { background: var(--danger); color: white; }
-  .btn-success { background: var(--success); color: white; }
-
-  /* Tables */
-  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  thead { background: #f1f5f9; font-weight: 600; }
-  .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-  
-  /* Analysis Colors */
-  .good { color: var(--success); font-weight: bold; }
-  .bad { color: var(--danger); font-weight: bold; background: #fee2e2; padding: 2px 6px; border-radius: 4px; }
-  .neutral { color: var(--text); }
-
-  /* Custom Logic Styles */
-  .formula-box { background: #eff6ff; border: 1px dashed var(--accent); padding: 10px; margin-bottom: 15px; font-size: 0.9rem; color: #1e40af; }
-  .ghost-cancel-highlight { background-color: #fef2f2; border-left: 4px solid var(--danger); }
-
-  /* Filter Bar */
-  .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
+body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+h1, h2 { text-align: center; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+th { background-color: #007BFF; color: white; }
+.green { background-color: #c6f6c6; }
+.yellow { background-color: #fff3c6; }
+.red { background-color: #f6c6c6; }
+.dashboard { display: flex; justify-content: space-around; flex-wrap: wrap; margin-bottom: 20px; }
+.card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 18%; text-align: center; margin-bottom: 10px; }
+.card h2 { margin: 10px 0; color: #007BFF; }
+.form-container { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+input, select { padding: 5px; margin: 5px; }
+button { padding: 7px 12px; margin: 5px; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer; }
+button:hover { background-color: #0056b3; }
+.editBtn { background-color: #ffa500; }
+.deleteBtn { background-color: #ff4d4d; }
+.branch-section { background: #fff; padding: 10px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 </style>
 </head>
 <body>
 
-<aside>
-  <div class="brand">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-    Audit Pro
-  </div>
-  <div class="nav active" onclick="showTab('rec')">Reconciliation</div>
-  <div class="nav" onclick="showTab('comp')">Complaints Manager</div>
-  <div class="nav" onclick="showTab('report')">Analysis & Reports</div>
-</aside>
+<h1>Call Center & Delivery Dashboard by Branch</h1>
 
-<main>
-  <!-- MODULE 1: RECONCILIATION -->
-  <div id="rec" class="module active">
-    <h2>Smart Order Reconciliation</h2>
-    <div class="grid-2">
-      <!-- Input Form -->
-      <div class="card">
-        <h3>Daily Data Entry</h3>
-        <div class="input-group">
-          <label>Date & Branch</label>
-          <input type="date" id="recDate">
-          <select id="recBranch">
-            <option>Hamdan St</option><option>Al Khalidiyah</option><option>Shabiya 11</option>
-            <option>Muroor</option><option>Al Majaz</option><option>Al Barsha</option>
-            <option>Al Satwa</option><option>Al Rigga</option>
-          </select>
-        </div>
+<!-- Dashboard -->
+<div class="dashboard">
+  <div class="card"><h3>Total Orders (CC)</h3><h2 id="totalOrdersCC">0</h2></div>
+  <div class="card"><h3>Total Picked Up</h3><h2 id="totalPickedUp">0</h2></div>
+  <div class="card"><h3>Total Orders Delivered</h3><h2 id="totalDelivered">0</h2></div>
+  <div class="card"><h3>Delivery Success %</h3><h2 id="deliveryRate">0%</h2></div>
+  <div class="card"><h3>Total Difference</h3><h2 id="totalDifference">0</h2></div>
+</div>
 
-        <!-- CC Data -->
-        <div class="input-group" style="border-left: 4px solid var(--accent);">
-          <label>Call Center Data</label>
-          <label>Total Orders Received</label>
-          <input type="number" id="ccTotal" placeholder="0" oninput="calcPreview()">
-          <label>Pick Up Orders (Direct)</label>
-          <input type="number" id="ccPickup" placeholder="0" oninput="calcPreview()">
-          <label>Authorised CC Cancels (Known)</label>
-          <input type="number" id="ccCancel" placeholder="0" oninput="calcPreview()">
-        </div>
+<!-- Data Input Form -->
+<div class="form-container">
+<h3>Add New Entry</h3>
+<label>Date: <input type="date" id="entryDate"></label>
+<label>Branch: 
+  <select id="branchSelect">
+    <option>Hamdan St</option>
+    <option>Al Khalidiyah</option>
+    <option>Shabiya 11</option>
+    <option>Muroor</option>
+    <option>Al Majaz</option>
+    <option>Al Barsha</option>
+    <option>Al Satwa</option>
+    <option>Al Rigga</option>
+  </select>
+</label>
+<label>Orders Received (CC): <input type="number" id="ordersReceived" min="0"></label>
+<label>Picked Up (CC): <input type="number" id="pickedUp" min="0"></label>
+<label>Cancelled (CC): <input type="number" id="cancelledCC" min="0"></label>
+<label>Orders Delivered (DL): <input type="number" id="ordersDelivered" min="0"></label>
+<button onclick="addRow()">Add Entry</button>
+<button onclick="printReport()">Print Report</button>
+</div>
 
-        <!-- Branch Data -->
-        <div class="input-group" style="border-left: 4px solid var(--success);">
-          <label>Branch Actuals</label>
-          <label>Actual Sales (Qty)</label>
-          <input type="number" id="branchSales" placeholder="0" oninput="calcPreview()">
-        </div>
+<!-- Filter -->
+<div class="form-container">
+<h3>Filter Table</h3>
+<label>Filter by Branch:
+  <select id="filterBranch" onchange="applyFilter()">
+    <option value="">All</option>
+    <option>Hamdan St</option>
+    <option>Al Khalidiyah</option>
+    <option>Shabiya 11</option>
+    <option>Muroor</option>
+    <option>Al Majaz</option>
+    <option>Al Barsha</option>
+    <option>Al Satwa</option>
+    <option>Al Rigga</option>
+  </select>
+</label>
+<label>Filter by Date: <input type="date" id="filterDate" onchange="applyFilter()"></label>
+</div>
 
-        <div class="formula-box" id="livePreview">
-          Expected: 0 | Actual: 0 | Ghost Cancel: 0
-        </div>
-        <button class="btn btn-primary" onclick="addRecon()">Save Record</button>
-      </div>
+<!-- Branch Sections -->
+<div id="branchTables"></div>
 
-      <!-- Recent History -->
-      <div class="card">
-        <h3>Recent Activity Log</h3>
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Branch</th><th>Exp</th><th>Act</th><th>Ghost Cancel</th></tr>
-          </thead>
-          <tbody id="recTable"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<script>
+let branchTables = document.getElementById('branchTables');
 
-  <!-- MODULE 2: COMPLAINTS -->
-  <div id="comp" class="module">
-    <h2>Professional Complaint Management</h2>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Log New Issue</h3>
-        <label>Customer / Order #</label>
-        <input type="text" id="compCust" placeholder="Name or Order ID">
-        <label>Branch</label>
-        <select id="compBranch">
-          <option>Hamdan St</option><option>Al Khalidiyah</option><option>Shabiya 11</option>
-          <option>Muroor</option><option>Al Majaz</option><option>Al Barsha</option>
-          <option>Al Satwa</option><option>Al Rigga</option>
-        </select>
-        <label>Issue Type</label>
-        <select id="compType">
-          <option>Quality Issue</option><option>Delivery Delay</option><option>Wrong Order</option><option>Rude Staff</option><option>Missing Item</option>
-        </select>
-        <label>Details</label>
-        <textarea id="compDesc" rows="3"></textarea>
-        <button class="btn btn-primary" onclick="addComplaint()">Open Ticket</button>
-      </div>
+// Load data from LocalStorage
+let data = JSON.parse(localStorage.getItem('ccData')) || [];
 
-      <div class="card">
-        <h3>Active Tickets Dashboard</h3>
-        <div class="filter-bar">
-          <label>View:</label>
-          <select id="compFilter" onchange="renderComps()">
-            <option value="active">Active Only</option>
-            <option value="resolved">Resolved</option>
-            <option value="all">All</option>
-          </select>
-        </div>
-        <table>
-          <thead>
-            <tr><th>Ref</th><th>Branch</th><th>Issue</th><th>Status</th><th>Action</th></tr>
-          </thead>
-          <tbody id="compTable"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+function saveData() {
+  localStorage.setItem('ccData', JSON.stringify(data));
+  updateDashboard();
+  renderBranchTables();
+}
 
-  <!-- MODULE 3: REPORTS -->
-  <div id="report" class="module">
-    <h2>Branch Analysis & Reports</h2>
-    
-    <!-- Report Controls -->
-    <div class="card" style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
-      <div>
-        <label>Report Type</label>
-        <select id="reportType" onchange="updateReportUI()">
-          <option value="daily">Daily Summary</option>
-          <option value="weekly">Weekly Summary</option>
-          <option value="monthly">Monthly Summary</option>
-        </select>
-      </div>
-      
-      <div id="dateInputDaily">
-        <label>Select Date</label>
-        <input type="date" id="reportDate" onchange="generateReport()">
-      </div>
-      
-      <div id="monthInput" style="display:none;">
-        <label>Select Month</label>
-        <input type="month" id="reportMonth" onchange="generateReport()">
-      </div>
-    </div>
+function addRow() {
+  const entry = {
+    date: document.getElementById('entryDate').value,
+    branch: document.getElementById('branchSelect').value,
+    ordersReceived: parseInt(document.getElementById('ordersReceived').value) || 0,
+    pickedUp: parseInt(document.getElementById('pickedUp').value) || 0,
+    cancelledCC: parseInt(document.getElementById('cancelledCC').value) || 0,
+    delivered: parseInt(document.getElementById('ordersDelivered').value) || 0
+  };
+  entry.difference = entry.delivered - (entry.ordersReceived - entry.pickedUp - entry.cancelledCC);
+  data.push(entry);
+  saveData();
+  clearInputs();
+}
 
-    <!-- Main Report Table -->
-    <div class="card">
-      <h3>Performance Overview</h3>
+function clearInputs() {
+  document.getElementById('ordersReceived').value = '';
+  document.getElementById('pickedUp').value = '';
+  document.getElementById('cancelledCC').value = '';
+  document.getElementById('ordersDelivered').value = '';
+  document.getElementById('entryDate').value = '';
+}
+
+// Dashboard update
+function updateDashboard(){
+  let totalCC=0,totalPicked=0,totalDelivered=0,totalDiff=0;
+  data.forEach(entry=>{
+    totalCC+=entry.ordersReceived;
+    totalPicked+=entry.pickedUp;
+    totalDelivered+=entry.delivered;
+    totalDiff+=entry.difference;
+  });
+  document.getElementById('totalOrdersCC').innerText=totalCC;
+  document.getElementById('totalPickedUp').innerText=totalPicked;
+  document.getElementById('totalDelivered').innerText=totalDelivered;
+  document.getElementById('totalDifference').innerText=totalDiff;
+  const deliveryRate=totalCC>0 ? Math.round((totalDelivered/totalCC)*100) : 0;
+  const rateElem=document.getElementById('deliveryRate');
+  rateElem.innerText=deliveryRate+'%';
+  rateElem.className=deliveryRate>=90?'green':(deliveryRate>=80?'yellow':'red');
+}
+
+// Render branch tables
+function renderBranchTables(){
+  branchTables.innerHTML='';
+  const branches=[...new Set(data.map(d=>d.branch))];
+  branches.forEach(branch=>{
+    const branchData=data.filter(d=>d.branch===branch);
+    const section=document.createElement('div');
+    section.className='branch-section';
+    section.innerHTML=`<h2>${branch}</h2>
       <table>
         <thead>
           <tr>
-            <th>Branch</th>
-            <th>Total CC Orders</th>
-            <th>Pick Up</th>
-            <th>Legitimate Cancel</th>
-            <th style="color:var(--danger)">Ghost Cancel (Alert)</th>
-            <th>Active Complaints</th>
-            <th>Rating</th>
+            <th>Date</th>
+            <th>Orders Received (CC)</th>
+            <th>Picked Up (CC)</th>
+            <th>Cancelled (CC)</th>
+            <th>Orders Delivered (DL)</th>
+            <th>Difference</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="reportTable"></tbody>
-      </table>
-    </div>
-
-    <!-- Ghost Cancel Audit (Special Focus) -->
-    <div class="card ghost-cancel-highlight">
-      <h3 style="color:var(--danger)">Ghost Cancel Audit (Branches cancelling without CC info)</h3>
-      <p>This report lists branches that cancelled orders internally without updating the Call Center system.</p>
-      <table>
-        <thead>
-          <tr><th>Date</th><th>Branch</th><th>Missing Orders (Qty)</th><th>Loss Potential</th></tr>
-        </thead>
-        <tbody id="auditTable"></tbody>
-      </table>
-    </div>
-  </div>
-
-</main>
-
-<!-- Modal for Resolution -->
-<div id="resModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-  <div style="background:white; padding:20px; border-radius:8px; width:400px;">
-    <h3>Resolve Ticket #<span id="modId"></span></h3>
-    <p style="color:#666; font-size:0.9rem;">Action Taken is Mandatory to close.</p>
-    <textarea id="modAction" rows="3" style="width:100%; margin-bottom:10px;" placeholder="Describe resolution..."></textarea>
-    <div style="display:flex; justify-content:flex-end; gap:10px;">
-      <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-success" onclick="confirmResolve()">Resolve & Close</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  // --- DATA ---
-  let recData = [];
-  let compData = [];
-  let currentResolveId = null;
-
-  const branches = ['Hamdan St', 'Al Khalidiyah', 'Shabiya 11', 'Muroor', 'Al Majaz', 'Al Barsha', 'Al Satwa', 'Al Rigga'];
-
-  // --- INIT ---
-  document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('recDate').value = today;
-    document.getElementById('reportDate').value = today;
-    // Initial Render
-    renderRecTable();
-    renderComps();
-    generateReport();
+        <tbody>
+        ${branchData.map((entry,index)=>`<tr>
+          <td>${entry.date}</td>
+          <td>${entry.ordersReceived}</td>
+          <td>${entry.pickedUp}</td>
+          <td>${entry.cancelledCC}</td>
+          <td>${entry.delivered}</td>
+          <td class="${entry.difference===0?'green':Math.abs(entry.difference)<=2?'yellow':'red'}">${entry.difference}</td>
+          <td>
+            <button class="editBtn" onclick="editRow(${data.indexOf(entry)})">Edit</button>
+            <button class="deleteBtn" onclick="deleteRow(${data.indexOf(entry)})">Delete</button>
+          </td>
+        </tr>`).join('')}
+        </tbody>
+      </table>`;
+    branchTables.appendChild(section);
   });
+}
 
-  function showTab(id) {
-    document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
-    document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.currentTarget.classList.add('active');
-    if(id === 'report') generateReport();
+// Edit/Delete
+function editRow(index){
+  const entry=data[index];
+  document.getElementById('entryDate').value=entry.date;
+  document.getElementById('branchSelect').value=entry.branch;
+  document.getElementById('ordersReceived').value=entry.ordersReceived;
+  document.getElementById('pickedUp').value=entry.pickedUp;
+  document.getElementById('cancelledCC').value=entry.cancelledCC;
+  document.getElementById('ordersDelivered').value=entry.delivered;
+  data.splice(index,1);
+  saveData();
+}
+
+function deleteRow(index){
+  if(confirm("Are you sure you want to delete this entry?")){
+    data.splice(index,1);
+    saveData();
   }
+}
 
-  // --- RECONCILIATION LOGIC ---
-  function calcPreview() {
-    const cc = parseInt(document.getElementById('ccTotal').value) || 0;
-    const pick = parseInt(document.getElementById('ccPickup').value) || 0;
-    const canc = parseInt(document.getElementById('ccCancel').value) || 0;
-    const act = parseInt(document.getElementById('branchSales').value) || 0;
-
-    // Formula: (CC - Cancel + Pickup) - Actual = Ghost Cancel
-    const expected = (cc - canc) + pick;
-    const ghost = expected - act;
-
-    const preview = document.getElementById('livePreview');
-    preview.innerHTML = `
-      <div>Expected for Branch: <strong>${expected}</strong></div>
-      <div>Actual Sales: <strong>${act}</strong></div>
-      <hr style="margin:5px 0; border:0; border-top:1px solid #bfdbfe;">
-      <div>Ghost Cancel (Branch Error): 
-        <span style="${ghost > 0 ? 'color:red; font-weight:bold' : 'color:green'}">${ghost} Orders</span>
-      </div>
-    `;
-  }
-
-  function addRecon() {
-    const cc = parseInt(document.getElementById('ccTotal').value) || 0;
-    const pick = parseInt(document.getElementById('ccPickup').value) || 0;
-    const canc = parseInt(document.getElementById('ccCancel').value) || 0;
-    const act = parseInt(document.getElementById('branchSales').value) || 0;
-    
-    if(cc === 0 && act === 0) return alert("Please enter data");
-
-    const expected = (cc - canc) + pick;
-    const ghost = expected - act;
-
-    recData.push({
-      id: Date.now(),
-      date: document.getElementById('recDate').value,
-      branch: document.getElementById('recBranch').value,
-      ccTotal: cc,
-      pickUp: pick,
-      ccCancel: canc,
-      branchSales: act,
-      ghostCancel: ghost
+// Filter
+function applyFilter(){
+  const branchFilter=document.getElementById('filterBranch').value;
+  const dateFilter=document.getElementById('filterDate').value;
+  branchTables.querySelectorAll('.branch-section').forEach(section=>{
+    const branchName=section.querySelector('h2').innerText;
+    const matchBranch=(branchFilter==='') || (branchName===branchFilter);
+    let showSection=false;
+    section.querySelectorAll('tbody tr').forEach(row=>{
+      const date=row.cells[0].innerText;
+      const matchDate=(dateFilter==='')||(date===dateFilter);
+      row.style.display=(matchBranch && matchDate)?'':'none';
+      if(row.style.display!=='none') showSection=true;
     });
+    section.style.display=showSection? 'block':'none';
+  });
+}
 
-    // Reset inputs except Date/Branch
-    document.getElementById('ccTotal').value = '';
-    document.getElementById('ccPickup').value = '';
-    document.getElementById('ccCancel').value = '';
-    document.getElementById('branchSales').value = '';
-    calcPreview();
-    renderRecTable();
-    alert("Record Saved");
-  }
+// Print
+function printReport(){ window.print(); }
 
-  function renderRecTable() {
-    const tbody = document.getElementById('recTable');
-    tbody.innerHTML = '';
-    // Show last 5
-    recData.slice().reverse().slice(0, 5).forEach(r => {
-      const expected = (r.ccTotal - r.ccCancel) + r.pickUp;
-      const rowClass = r.ghostCancel > 0 ? 'bad' : 'good';
-      
-      tbody.innerHTML += `
-        <tr>
-          <td>${r.date}</td>
-          <td>${r.branch}</td>
-          <td>${expected}</td>
-          <td>${r.branchSales}</td>
-          <td class="${rowClass}">${r.ghostCancel > 0 ? '-' + r.ghostCancel : '0'}</td>
-        </tr>
-      `;
-    });
-  }
-
-  // --- COMPLAINTS LOGIC ---
-  function addComplaint() {
-    const cust = document.getElementById('compCust').value;
-    if(!cust) return alert("Customer Name/ID required");
-    
-    compData.push({
-      id: Date.now(),
-      date: new Date().toISOString().split('T')[0], // Simplified date for demo
-      timestamp: new Date().getTime(),
-      branch: document.getElementById('compBranch').value,
-      type: document.getElementById('compType').value,
-      cust: cust,
-      status: 'Open',
-      action: ''
-    });
-
-    document.getElementById('compCust').value = '';
-    document.getElementById('compDesc').value = '';
-    renderComps();
-    alert("Complaint Ticket Created");
-  }
-
-  function renderComps() {
-    const filter = document.getElementById('compFilter').value;
-    const tbody = document.getElementById('compTable');
-    tbody.innerHTML = '';
-
-    let list = compData.slice().reverse();
-    if(filter === 'active') list = list.filter(c => c.status !== 'Resolved');
-    if(filter === 'resolved') list = list.filter(c => c.status === 'Resolved');
-
-    list.forEach(c => {
-      let badge = c.status === 'Open' ? 'status-badge' : (c.status === 'Resolved' ? 'good' : 'neutral');
-      let btn = c.status === 'Open' 
-        ? `<button class="btn btn-sm btn-primary" style="font-size:0.7rem; padding:4px 8px;" onclick="openResolve(${c.id})">Solve</button>`
-        : `<span style="color:green">Closed</span>`;
-
-      tbody.innerHTML += `
-        <tr>
-          <td>#${c.id.toString().slice(-4)}</td>
-          <td>${c.branch}</td>
-          <td>${c.type} (${c.cust})</td>
-          <td><span class="status-badge" style="background:${c.status==='Open'?'#fee2e2':'#d1fae5'}; color:${c.status==='Open'?'#991b1b':'#065f46'}">${c.status}</span></td>
-          <td>${btn}</td>
-        </tr>
-      `;
-    });
-  }
-
-  function openResolve(id) {
-    currentResolveId = id;
-    document.getElementById('modId').innerText = id.toString().slice(-4);
-    document.getElementById('modAction').value = '';
-    document.getElementById('resModal').style.display = 'flex';
-  }
-
-  function closeModal() {
-    document.getElementById('resModal').style.display = 'none';
-  }
-
-  function confirmResolve() {
-    const action = document.getElementById('modAction').value;
-    if(!action || action.length < 5) return alert("Please describe the resolution (min 5 chars).");
-    
-    const c = compData.find(x => x.id === currentResolveId);
-    c.status = 'Resolved';
-    c.action = action;
-    closeModal();
-    renderComps();
-  }
-
-  // --- REPORTS LOGIC ---
-  function updateReportUI() {
-    const type = document.getElementById('reportType').value;
-    document.getElementById('dateInputDaily').style.display = type === 'daily' ? 'block' : 'none';
-    document.getElementById('monthInput').style.display = type === 'monthly' ? 'block' : 'none';
-    generateReport();
-  }
-
-  function generateReport() {
-    const type = document.getElementById('reportType').value;
-    const tbody = document.getElementById('reportTable');
-    const auditTbody = document.getElementById('auditTable');
-    tbody.innerHTML = '';
-    auditTbody.innerHTML = '';
-
-    // Filter Data Logic
-    let filteredRec = [];
-    let filteredComp = [];
-
-    if(type === 'daily') {
-      const d = document.getElementById('reportDate').value;
-      filteredRec = recData.filter(r => r.date === d);
-      filteredComp = compData.filter(c => c.date === d); // Simplified date match
-    } else if (type === 'monthly') {
-      const m = document.getElementById('reportMonth').value; // YYYY-MM
-      filteredRec = recData.filter(r => r.date.startsWith(m));
-      filteredComp = compData.filter(c => c.date.startsWith(m));
-    } else if (type === 'weekly') {
-      // Last 7 days logic
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      filteredRec = recData.filter(r => new Date(r.date) >= oneWeekAgo);
-      filteredComp = compData.filter(c => new Date(c.date) >= oneWeekAgo);
-    }
-
-    // Build Report per Branch
-    branches.forEach(br => {
-      // Aggregate Reconciliation Data
-      const brRec = filteredRec.filter(r => r.branch === br);
-      const totalCc = brRec.reduce((sum, r) => sum + r.ccTotal, 0);
-      const totalPick = brRec.reduce((sum, r) => sum + r.pickUp, 0);
-      const totalCancel = brRec.reduce((sum, r) => sum + r.ccCancel, 0);
-      const ghostCancels = brRec.reduce((sum, r) => sum + (r.ghostCancel > 0 ? r.ghostCancel : 0), 0);
-      
-      // Aggregate Complaint Data
-      const brComps = filteredComp.filter(c => c.branch === br && c.status !== 'Resolved');
-      const activeComps = brComps.length;
-
-      // Calc Score
-      const score = Math.max(0, 100 - (ghostCancels * 5) - (activeComps * 10));
-      const scoreClass = score > 80 ? 'good' : (score > 50 ? 'neutral' : 'bad');
-
-      tbody.innerHTML += `
-        <tr>
-          <td>${br}</td>
-          <td>${totalCc}</td>
-          <td>${totalPick}</td>
-          <td>${totalCancel}</td>
-          <td style="${ghostCancels > 0 ? 'color:red; font-weight:bold;' : ''}">${ghostCancels}</td>
-          <td>${activeComps}</td>
-          <td class="${scoreClass}">${score}/100</td>
-        </tr>
-      `;
-    });
-
-    // Build Audit Table (Only Ghost Cancels)
-    filteredRec.filter(r => r.ghostCancel > 0).forEach(r => {
-      auditTbody.innerHTML += `
-        <tr>
-          <td>${r.date}</td>
-          <td>${r.branch}</td>
-          <td style="color:red; font-weight:bold;">${r.ghostCancel}</td>
-          <td>High</td>
-        </tr>
-      `;
-    });
-  }
-
+// Initialize
+updateDashboard();
+renderBranchTables();
 </script>
 
 </body>
