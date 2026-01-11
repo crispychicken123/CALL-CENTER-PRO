@@ -379,6 +379,30 @@
             border-color: var(--danger-color);
         }
         
+        .channel-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 0.25rem;
+            margin-right: 0.25rem;
+        }
+        
+        .channel-platform {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .channel-call {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .channel-online {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        
         @media (max-width: 768px) {
             .chart-container {
                 height: 250px;
@@ -494,6 +518,11 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
+                <button class="nav-link" id="channels-tab" data-bs-toggle="tab" data-bs-target="#channels" type="button" role="tab" aria-controls="channels" aria-selected="false">
+                    <i class="bi bi-telephone" aria-hidden="true"></i> Channels
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
                 <button class="nav-link" id="import-tab" data-bs-toggle="tab" data-bs-target="#import" type="button" role="tab" aria-controls="import" aria-selected="false">
                     <i class="bi bi-upload" aria-hidden="true"></i> Import/Export
                 </button>
@@ -562,6 +591,18 @@
                     <div class="col-md-6">
                         <div class="card fade-in">
                             <div class="card-header">
+                                <h5>Cases by Channel</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="channelChart" aria-label="Cases by channel chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card fade-in">
+                            <div class="card-header">
                                 <h5>Cases by Platform</h5>
                             </div>
                             <div class="card-body">
@@ -571,6 +612,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="card fade-in">
                             <div class="card-header">
@@ -583,9 +627,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="card fade-in">
                             <div class="card-header">
@@ -598,6 +639,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="card fade-in">
                             <div class="card-header">
@@ -610,10 +654,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <div class="card fade-in">
                             <div class="card-header">
                                 <h5>Agent Performance</h5>
@@ -665,17 +706,21 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
+                                    <label for="channel" class="form-label">Channel <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="channel" required aria-describedby="channelError">
+                                        <option value="">Select Channel</option>
+                                    </select>
+                                    <div class="invalid-feedback" id="channelError">Please select a channel</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <label for="platform" class="form-label">Platform <span class="text-danger">*</span></label>
                                     <select class="form-select" id="platform" required aria-describedby="platformError">
                                         <option value="">Select Platform</option>
-                                        <option value="Noon">Noon</option>
-                                        <option value="Careem">Careem</option>
-                                        <option value="Smile">Smile</option>
-                                        <option value="Deliveroo">Deliveroo</option>
-                                        <option value="Keita">Keita</option>
                                     </select>
                                     <div class="invalid-feedback" id="platformError">Please select a platform</div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="branch" class="form-label">Branch <span class="text-danger">*</span></label>
                                     <select class="form-select" id="branch" required aria-describedby="branchError">
@@ -683,20 +728,18 @@
                                     </select>
                                     <div class="invalid-feedback" id="branchError">Please select a branch</div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="orderNumber" class="form-label">Order Number <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="orderNumber" required aria-describedby="orderNumberError">
                                     <div class="invalid-feedback" id="orderNumberError">Please enter an order number</div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="customerName" class="form-label">Customer Name / Number <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="customerName" required aria-describedby="customerNameError">
                                     <div class="invalid-feedback" id="customerNameError">Please enter customer name or number</div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="issueType" class="form-label">Issue Type <span class="text-danger">*</span></label>
                                     <select class="form-select" id="issueType" required aria-describedby="issueTypeError">
@@ -704,6 +747,8 @@
                                     </select>
                                     <div class="invalid-feedback" id="issueTypeError">Please select an issue type</div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="responsibleParty" class="form-label">Responsible Party <span class="text-danger">*</span></label>
                                     <select class="form-select" id="responsibleParty" required aria-describedby="responsiblePartyError">
@@ -711,8 +756,14 @@
                                         <option value="Platform">Platform</option>
                                         <option value="Restaurant">Restaurant</option>
                                         <option value="Driver">Driver</option>
+                                        <option value="Call Center">Call Center</option>
                                     </select>
                                     <div class="invalid-feedback" id="responsiblePartyError">Please select a responsible party</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="agentName" class="form-label">Agent Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="agentName" required aria-describedby="agentNameError">
+                                    <div class="invalid-feedback" id="agentNameError">Please enter agent name</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -741,9 +792,9 @@
                                     <div class="invalid-feedback" id="statusError">Please select a status</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="agentName" class="form-label">Agent Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="agentName" required aria-describedby="agentNameError">
-                                    <div class="invalid-feedback" id="agentNameError">Please enter agent name</div>
+                                    <label for="callReference" class="form-label">Call Reference (if applicable)</label>
+                                    <input type="text" class="form-control" id="callReference" placeholder="Enter call reference number" aria-describedby="callReferenceHelp">
+                                    <div class="form-text" id="callReferenceHelp">For call center channels only</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -781,14 +832,15 @@
                 <div class="filter-section mt-4">
                     <div class="row g-3">
                         <div class="col-md-3">
+                            <label for="filterChannel" class="form-label">Filter by Channel</label>
+                            <select class="form-select" id="filterChannel" aria-label="Filter by channel">
+                                <option value="">All Channels</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
                             <label for="filterPlatform" class="form-label">Filter by Platform</label>
                             <select class="form-select" id="filterPlatform" aria-label="Filter by platform">
                                 <option value="">All Platforms</option>
-                                <option value="Noon">Noon</option>
-                                <option value="Careem">Careem</option>
-                                <option value="Smile">Smile</option>
-                                <option value="Deliveroo">Deliveroo</option>
-                                <option value="Keita">Keita</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -809,10 +861,6 @@
                                 <option value="Closed">Closed</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="searchInput" class="form-label">Search</label>
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search cases..." aria-label="Search cases">
-                        </div>
                     </div>
                     <div class="row g-3 mt-2">
                         <div class="col-md-6">
@@ -825,8 +873,12 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-12">
-                            <button class="btn btn-primary" id="applyFilters">Apply Filters</button>
+                        <div class="col-md-6">
+                            <label for="searchInput" class="form-label">Search</label>
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search cases..." aria-label="Search cases">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button class="btn btn-primary me-2" id="applyFilters">Apply Filters</button>
                             <button class="btn btn-outline-secondary" id="resetFilters">Reset Filters</button>
                         </div>
                     </div>
@@ -844,6 +896,7 @@
                                     <tr>
                                         <th>Case ID</th>
                                         <th>Date</th>
+                                        <th>Channel</th>
                                         <th>Platform</th>
                                         <th>Branch</th>
                                         <th>Order #</th>
@@ -857,7 +910,141 @@
                                 </thead>
                                 <tbody id="casesTableBody">
                                     <tr>
-                                        <td colspan="11" class="text-center">No cases found</td>
+                                        <td colspan="12" class="text-center">No cases found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channels Tab -->
+            <div class="tab-pane fade" id="channels" role="tabpanel" aria-labelledby="channels-tab">
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Channel Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card stat-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-globe" style="font-size: 2rem; color: var(--info-color);"></i>
+                                        <h6 class="mt-2">Platform Channels</h6>
+                                        <h4 class="text-info" id="platformChannelCount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card stat-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-telephone-fill" style="font-size: 2rem; color: var(--warning-color);"></i>
+                                        <h6 class="mt-2">Call Center Channels</h6>
+                                        <h4 class="text-warning" id="callCenterChannelCount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card stat-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-headset" style="font-size: 2rem; color: var(--success-color);"></i>
+                                        <h6 class="mt-2">Online Channels</h6>
+                                        <h4 class="text-success" id="onlineChannelCount">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Manage Channels</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="channelTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="platform-channels-tab" data-bs-toggle="tab" data-bs-target="#platform-channels" type="button" role="tab">Platform Channels</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="call-center-channels-tab" data-bs-toggle="tab" data-bs-target="#call-center-channels" type="button" role="tab">Call Center Channels</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="online-channels-tab" data-bs-toggle="tab" data-bs-target="#online-channels" type="button" role="tab">Online Channels</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="channelTabContent">
+                            <div class="tab-pane fade show active" id="platform-channels" role="tabpanel">
+                                <div class="mt-3">
+                                    <form id="platformChannelForm" class="mb-3">
+                                        <div class="dynamic-input-group">
+                                            <input type="text" class="form-control" id="newPlatformChannel" placeholder="Enter new platform channel" required>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-plus" aria-hidden="true"></i> Add
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="dynamic-list" id="platformChannelsList" role="list" aria-label="Platform channels list">
+                                        <!-- Platform channels will be listed here -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="call-center-channels" role="tabpanel">
+                                <div class="mt-3">
+                                    <form id="callCenterChannelForm" class="mb-3">
+                                        <div class="dynamic-input-group">
+                                            <input type="text" class="form-control" id="newCallCenterChannel" placeholder="Enter new call center channel" required>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-plus" aria-hidden="true"></i> Add
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="dynamic-list" id="callCenterChannelsList" role="list" aria-label="Call center channels list">
+                                        <!-- Call center channels will be listed here -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="online-channels" role="tabpanel">
+                                <div class="mt-3">
+                                    <form id="onlineChannelForm" class="mb-3">
+                                        <div class="dynamic-input-group">
+                                            <input type="text" class="form-control" id="newOnlineChannel" placeholder="Enter new online channel" required>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-plus" aria-hidden="true"></i> Add
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="dynamic-list" id="onlineChannelsList" role="list" aria-label="Online channels list">
+                                        <!-- Online channels will be listed here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Channel Performance</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table table-striped" aria-label="Channel performance table">
+                                <thead>
+                                    <tr>
+                                        <th>Channel</th>
+                                        <th>Type</th>
+                                        <th>Total Cases</th>
+                                        <th>Open Cases</th>
+                                        <th>Closed Cases</th>
+                                        <th>Resolution Rate</th>
+                                        <th>Total Compensation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="channelPerformanceTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center">No data available</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -903,6 +1090,7 @@
                                         <tr>
                                             <th>Case ID</th>
                                             <th>Date</th>
+                                            <th>Channel</th>
                                             <th>Platform</th>
                                             <th>Branch</th>
                                             <th>Order #</th>
@@ -974,6 +1162,7 @@ Please review and approve the following compensation case:
 📋 Case Details:
 • Case ID: {caseId}
 • Date: {date}
+• Channel: {channel}
 • Platform: {platform}
 • Branch: {branch}
 • Order #: {orderNumber}
@@ -1143,6 +1332,7 @@ Thank you</textarea>
                                     <select class="form-select" id="reportType" required>
                                         <option value="summary">Summary Report</option>
                                         <option value="detailed">Detailed Report</option>
+                                        <option value="channel">Channel Performance</option>
                                         <option value="platform">Platform Performance</option>
                                         <option value="branch">Branch Performance</option>
                                         <option value="agent">Agent Performance</option>
@@ -1260,7 +1450,7 @@ Thank you</textarea>
             <div class="row">
                 <div class="col-md-6">
                     <h5>Crispy Chicken Compensation Tracking System</h5>
-                    <p>Managing compensation cases across all platforms and branches.</p>
+                    <p>Managing compensation cases across all platforms and channels.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p>&copy; 2023 Crispy Chicken. All rights reserved.</p>
@@ -1277,6 +1467,7 @@ Thank you</textarea>
             compensationCases: [],
             currentEditingCaseId: null,
             charts: {
+                channel: null,
                 platform: null,
                 branch: null,
                 status: null,
@@ -1294,6 +1485,7 @@ Please review and approve the following compensation case:
 📋 Case Details:
 • Case ID: {caseId}
 • Date: {date}
+• Channel: {channel}
 • Platform: {platform}
 • Branch: {branch}
 • Order #: {orderNumber}
@@ -1308,6 +1500,11 @@ Action Taken: {actionTaken}
 Please reply with APPROVED or REJECTED
 
 Thank you`
+            },
+            channels: {
+                platform: ['Noon', 'Careem', 'Smile', 'Deliveroo', 'Keita'],
+                callCenter: ['Delivery Call Center', 'Customer Service Hotline'],
+                online: ['Online Call Center', 'Website Chat', 'Email Support']
             },
             issueTypes: [
                 'Missing Item',
@@ -1422,6 +1619,14 @@ Thank you`
                 return phoneRegex.test(phone);
             },
 
+            // Get channel type
+            getChannelType: function(channel) {
+                if (AppState.channels.platform.includes(channel)) return 'platform';
+                if (AppState.channels.callCenter.includes(channel)) return 'callCenter';
+                if (AppState.channels.online.includes(channel)) return 'online';
+                return 'unknown';
+            },
+
             // Debounce function
             debounce: function(func, wait) {
                 let timeout;
@@ -1518,6 +1723,7 @@ Thank you`
             AppState.compensationCases = Utils.storage.get('compensationCases', []);
             AppState.whatsappHistory = Utils.storage.get('whatsappHistory', []);
             AppState.managerSettings = Utils.storage.get('managerSettings', AppState.managerSettings);
+            AppState.channels = Utils.storage.get('channels', AppState.channels);
             AppState.issueTypes = Utils.storage.get('issueTypes', AppState.issueTypes);
             AppState.branches = Utils.storage.get('branches', AppState.branches);
             
@@ -1539,6 +1745,8 @@ Thank you`
             updateWhatsAppCaseSelect();
             updateDynamicSelects();
             loadSettingsData();
+            loadChannelData();
+            updateChannelOverview();
         }
 
         // Setup event listeners
@@ -1577,6 +1785,22 @@ Thank you`
             const branchForm = document.getElementById('branchForm');
             if (branchForm) {
                 branchForm.addEventListener('submit', handleBranchSubmit);
+            }
+            
+            // Channel forms
+            const platformChannelForm = document.getElementById('platformChannelForm');
+            if (platformChannelForm) {
+                platformChannelForm.addEventListener('submit', handlePlatformChannelSubmit);
+            }
+            
+            const callCenterChannelForm = document.getElementById('callCenterChannelForm');
+            if (callCenterChannelForm) {
+                callCenterChannelForm.addEventListener('submit', handleCallCenterChannelSubmit);
+            }
+            
+            const onlineChannelForm = document.getElementById('onlineChannelForm');
+            if (onlineChannelForm) {
+                onlineChannelForm.addEventListener('submit', handleOnlineChannelSubmit);
             }
             
             // Filter controls
@@ -1758,6 +1982,21 @@ Thank you`
             addBranch();
         }
 
+        function handlePlatformChannelSubmit(e) {
+            e.preventDefault();
+            addChannel('platform');
+        }
+
+        function handleCallCenterChannelSubmit(e) {
+            e.preventDefault();
+            addChannel('callCenter');
+        }
+
+        function handleOnlineChannelSubmit(e) {
+            e.preventDefault();
+            addChannel('online');
+        }
+
         // Form validation
         function validateForm(formId) {
             const form = document.getElementById(formId);
@@ -1834,6 +2073,7 @@ Thank you`
                 {
                     id: Utils.generateId(),
                     date: new Date(currentYear, currentMonth, 5).toISOString().split('T')[0],
+                    channel: 'Noon',
                     platform: 'Noon',
                     branch: 'Hamdan',
                     orderNumber: 'ORD123456',
@@ -1853,6 +2093,7 @@ Thank you`
                 {
                     id: Utils.generateId(),
                     date: new Date(currentYear, currentMonth, 10).toISOString().split('T')[0],
+                    channel: 'Delivery Call Center',
                     platform: 'Careem',
                     branch: 'Khaldia',
                     orderNumber: 'ORD789012',
@@ -1872,6 +2113,7 @@ Thank you`
                 {
                     id: Utils.generateId(),
                     date: new Date(currentYear, currentMonth, 15).toISOString().split('T')[0],
+                    channel: 'Online Call Center',
                     platform: 'Deliveroo',
                     branch: 'Muroor',
                     orderNumber: 'ORD345678',
@@ -1891,6 +2133,7 @@ Thank you`
                 {
                     id: Utils.generateId(),
                     date: new Date(currentYear, currentMonth - 1, 20).toISOString().split('T')[0],
+                    channel: 'Smile',
                     platform: 'Smile',
                     branch: 'Electra',
                     orderNumber: 'ORD901234',
@@ -1910,6 +2153,7 @@ Thank you`
                 {
                     id: Utils.generateId(),
                     date: new Date(currentYear, currentMonth - 1, 25).toISOString().split('T')[0],
+                    channel: 'Customer Service Hotline',
                     platform: 'Keita',
                     branch: 'Barsha',
                     orderNumber: 'ORD567890',
@@ -1942,6 +2186,7 @@ Thank you`
                 const newCase = {
                     id: document.getElementById('caseId').value,
                     date: document.getElementById('date').value,
+                    channel: document.getElementById('channel').value,
                     platform: document.getElementById('platform').value,
                     branch: document.getElementById('branch').value,
                     orderNumber: Utils.sanitizeInput(document.getElementById('orderNumber').value),
@@ -1953,6 +2198,7 @@ Thank you`
                     status: document.getElementById('status').value,
                     actionTaken: Utils.sanitizeInput(document.getElementById('actionTaken').value),
                     agentName: Utils.sanitizeInput(document.getElementById('agentName').value),
+                    callReference: Utils.sanitizeInput(document.getElementById('callReference').value),
                     dateClosed: document.getElementById('status').value === 'Closed' ? new Date().toISOString() : null,
                     supportingFile: Utils.sanitizeInput(document.getElementById('supportingFile').value),
                     customerComment: Utils.sanitizeInput(document.getElementById('customerComment').value),
@@ -1989,6 +2235,7 @@ Thank you`
                     updateDashboard();
                     updateLastUpdated();
                     updateWhatsAppCaseSelect();
+                    updateChannelOverview();
                     
                     showLoadingSpinner(false);
                     showToast('Case saved successfully!', 'success');
@@ -2013,7 +2260,7 @@ Thank you`
             if (!tableBody) return;
             
             if (casesToDisplay.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="11" class="text-center">No cases found</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="12" class="text-center">No cases found</td></tr>';
                 const casesCount = document.getElementById('casesCount');
                 if (casesCount) {
                     casesCount.textContent = '0 cases';
@@ -2027,10 +2274,17 @@ Thank you`
             const sortedCases = [...casesToDisplay].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
             sortedCases.forEach(caseItem => {
+                const channelType = Utils.getChannelType(caseItem.channel);
+                const channelBadgeClass = channelType === 'platform' ? 'channel-platform' : 
+                                         channelType === 'callCenter' ? 'channel-call' : 'channel-online';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${caseItem.id}</td>
                     <td>${Utils.formatDate(caseItem.date)}</td>
+                    <td>
+                        <span class="channel-badge ${channelBadgeClass}">${caseItem.channel}</span>
+                    </td>
                     <td>${caseItem.platform}</td>
                     <td>${caseItem.branch}</td>
                     <td>${caseItem.orderNumber}</td>
@@ -2144,10 +2398,68 @@ Thank you`
 
         // Update all charts
         function updateCharts() {
+            updateChannelChart();
             updatePlatformChart();
             updateBranchChart();
             updateStatusChart();
             updateIssueTypeChart();
+        }
+
+        // Update channel chart
+        function updateChannelChart() {
+            const ctx = document.getElementById('channelChart');
+            if (!ctx) return;
+            
+            // Destroy existing chart if it exists
+            if (AppState.charts.channel) {
+                AppState.charts.channel.destroy();
+            }
+            
+            const channelCounts = {};
+            AppState.compensationCases.forEach(caseItem => {
+                channelCounts[caseItem.channel] = (channelCounts[caseItem.channel] || 0) + 1;
+            });
+            
+            AppState.charts.channel = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(channelCounts),
+                    datasets: [{
+                        label: 'Cases by Channel',
+                        data: Object.values(channelCounts),
+                        backgroundColor: [
+                            'rgba(230, 57, 70, 0.7)',
+                            'rgba(168, 218, 220, 0.7)',
+                            'rgba(241, 250, 238, 0.7)',
+                            'rgba(29, 53, 87, 0.7)',
+                            'rgba(255, 183, 77, 0.7)',
+                            'rgba(73, 80, 87, 0.7)',
+                            'rgba(119, 140, 163, 0.7)',
+                            'rgba(223, 230, 233, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(230, 57, 70, 1)',
+                            'rgba(168, 218, 220, 1)',
+                            'rgba(241, 250, 238, 1)',
+                            'rgba(29, 53, 87, 1)',
+                            'rgba(255, 183, 77, 1)',
+                            'rgba(73, 80, 87, 1)',
+                            'rgba(119, 140, 163, 1)',
+                            'rgba(223, 230, 233, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
         }
 
         // Update platform chart
@@ -2428,6 +2740,254 @@ Thank you`
             });
         }
 
+        // Channel management functions
+        function loadChannelData() {
+            // Update channel selects
+            updateChannelSelects();
+            
+            // Load channel lists
+            loadChannelLists();
+            
+            // Update channel performance table
+            updateChannelPerformanceTable();
+        }
+
+        function updateChannelSelects() {
+            // Update channel select in new case form
+            const channelSelect = document.getElementById('channel');
+            if (channelSelect) {
+                const currentValue = channelSelect.value;
+                channelSelect.innerHTML = '<option value="">Select Channel</option>';
+                
+                // Add platform channels
+                const platformGroup = document.createElement('optgroup');
+                platformGroup.label = 'Platform Channels';
+                AppState.channels.platform.forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    if (channel === currentValue) option.selected = true;
+                    platformGroup.appendChild(option);
+                });
+                channelSelect.appendChild(platformGroup);
+                
+                // Add call center channels
+                const callCenterGroup = document.createElement('optgroup');
+                callCenterGroup.label = 'Call Center Channels';
+                AppState.channels.callCenter.forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    if (channel === currentValue) option.selected = true;
+                    callCenterGroup.appendChild(option);
+                });
+                channelSelect.appendChild(callCenterGroup);
+                
+                // Add online channels
+                const onlineGroup = document.createElement('optgroup');
+                onlineGroup.label = 'Online Channels';
+                AppState.channels.online.forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    if (channel === currentValue) option.selected = true;
+                    onlineGroup.appendChild(option);
+                });
+                channelSelect.appendChild(onlineGroup);
+            }
+            
+            // Update filter channel select
+            const filterChannelSelect = document.getElementById('filterChannel');
+            if (filterChannelSelect) {
+                const currentValue = filterChannelSelect.value;
+                filterChannelSelect.innerHTML = '<option value="">All Channels</option>';
+                
+                [...AppState.channels.platform, ...AppState.channels.callCenter, ...AppState.channels.online].forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    if (channel === currentValue) option.selected = true;
+                    filterChannelSelect.appendChild(option);
+                });
+            }
+        }
+
+        function loadChannelLists() {
+            // Load platform channels
+            const platformChannelsList = document.getElementById('platformChannelsList');
+            if (platformChannelsList) {
+                platformChannelsList.innerHTML = '';
+                AppState.channels.platform.forEach(channel => {
+                    const item = document.createElement('div');
+                    item.className = 'dynamic-list-item';
+                    item.innerHTML = `
+                        <span>${channel}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeChannel('platform', '${channel}')" aria-label="Remove ${channel}">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
+                        </button>
+                    `;
+                    platformChannelsList.appendChild(item);
+                });
+            }
+            
+            // Load call center channels
+            const callCenterChannelsList = document.getElementById('callCenterChannelsList');
+            if (callCenterChannelsList) {
+                callCenterChannelsList.innerHTML = '';
+                AppState.channels.callCenter.forEach(channel => {
+                    const item = document.createElement('div');
+                    item.className = 'dynamic-list-item';
+                    item.innerHTML = `
+                        <span>${channel}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeChannel('callCenter', '${channel}')" aria-label="Remove ${channel}">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
+                        </button>
+                    `;
+                    callCenterChannelsList.appendChild(item);
+                });
+            }
+            
+            // Load online channels
+            const onlineChannelsList = document.getElementById('onlineChannelsList');
+            if (onlineChannelsList) {
+                onlineChannelsList.innerHTML = '';
+                AppState.channels.online.forEach(channel => {
+                    const item = document.createElement('div');
+                    item.className = 'dynamic-list-item';
+                    item.innerHTML = `
+                        <span>${channel}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeChannel('online', '${channel}')" aria-label="Remove ${channel}">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
+                        </button>
+                    `;
+                    onlineChannelsList.appendChild(item);
+                });
+            }
+        }
+
+        function updateChannelOverview() {
+            const platformCount = document.getElementById('platformChannelCount');
+            const callCenterCount = document.getElementById('callCenterChannelCount');
+            const onlineCount = document.getElementById('onlineChannelCount');
+            
+            if (platformCount) platformCount.textContent = AppState.channels.platform.length;
+            if (callCenterCount) callCenterCount.textContent = AppState.channels.callCenter.length;
+            if (onlineCount) onlineCount.textContent = AppState.channels.online.length;
+        }
+
+        function updateChannelPerformanceTable() {
+            const channelPerformance = {};
+            
+            // Initialize all channels
+            [...AppState.channels.platform, ...AppState.channels.callCenter, ...AppState.channels.online].forEach(channel => {
+                channelPerformance[channel] = {
+                    cases: 0,
+                    openCases: 0,
+                    closedCases: 0,
+                    compensation: 0
+                };
+            });
+            
+            // Calculate performance metrics
+            AppState.compensationCases.forEach(caseItem => {
+                if (channelPerformance[caseItem.channel]) {
+                    channelPerformance[caseItem.channel].cases++;
+                    channelPerformance[caseItem.channel].compensation += caseItem.compensationValue;
+                    
+                    if (caseItem.status === 'Open') {
+                        channelPerformance[caseItem.channel].openCases++;
+                    } else if (caseItem.status === 'Closed') {
+                        channelPerformance[caseItem.channel].closedCases++;
+                    }
+                }
+            });
+            
+            const tableBody = document.getElementById('channelPerformanceTable');
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = '';
+            
+            const channelsWithData = Object.entries(channelPerformance).filter(([_, data]) => data.cases > 0);
+            
+            if (channelsWithData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No data available</td></tr>';
+                return;
+            }
+            
+            channelsWithData.forEach(([channel, data]) => {
+                const channelType = Utils.getChannelType(channel);
+                const resolutionRate = data.cases > 0 
+                    ? ((data.closedCases / data.cases) * 100).toFixed(1) 
+                    : 0;
+                
+                const channelBadgeClass = channelType === 'platform' ? 'channel-platform' : 
+                                         channelType === 'callCenter' ? 'channel-call' : 'channel-online';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <span class="channel-badge ${channelBadgeClass}">${channel}</span>
+                    </td>
+                    <td>${channelType.charAt(0).toUpperCase() + channelType.slice(1)}</td>
+                    <td>${data.cases}</td>
+                    <td>${data.openCases}</td>
+                    <td>${data.closedCases}</td>
+                    <td>${resolutionRate}%</td>
+                    <td>AED ${data.compensation.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function addChannel(type) {
+            const inputId = type === 'platform' ? 'newPlatformChannel' : 
+                           type === 'callCenter' ? 'newCallCenterChannel' : 'newOnlineChannel';
+            const input = document.getElementById(inputId);
+            const value = Utils.sanitizeInput(input.value.trim());
+            
+            if (!value) {
+                showToast(`Please enter a ${type} channel name`, 'warning');
+                return;
+            }
+            
+            if (AppState.channels[type].includes(value)) {
+                showToast('Channel already exists', 'warning');
+                return;
+            }
+            
+            AppState.channels[type].push(value);
+            Utils.storage.set('channels', AppState.channels);
+            
+            input.value = '';
+            updateChannelSelects();
+            loadChannelLists();
+            updateChannelOverview();
+            updateChannelPerformanceTable();
+            
+            showToast('Channel added successfully!', 'success');
+        }
+
+        function removeChannel(type, channel) {
+            if (!confirm(`Are you sure you want to remove "${channel}"?`)) return;
+            
+            // Check if any cases use this channel
+            const casesWithChannel = AppState.compensationCases.filter(c => c.channel === channel);
+            if (casesWithChannel.length > 0) {
+                showToast(`Cannot remove: ${casesWithChannel.length} case(s) use this channel`, 'danger');
+                return;
+            }
+            
+            AppState.channels[type] = AppState.channels[type].filter(c => c !== channel);
+            Utils.storage.set('channels', AppState.channels);
+            
+            updateChannelSelects();
+            loadChannelLists();
+            updateChannelOverview();
+            updateChannelPerformanceTable();
+            
+            showToast('Channel removed successfully!', 'success');
+        }
+
         // View case details
         function viewCaseDetails(caseId) {
             const caseItem = AppState.compensationCases.find(c => c.id === caseId);
@@ -2439,17 +2999,22 @@ Thank you`
             const modal = new bootstrap.Modal(document.getElementById('caseDetailsModal'));
             const content = document.getElementById('caseDetailsContent');
             
+            const channelType = Utils.getChannelType(caseItem.channel);
+            const channelBadgeClass = channelType === 'platform' ? 'channel-platform' : 
+                                     channelType === 'callCenter' ? 'channel-call' : 'channel-online';
+            
             content.innerHTML = `
                 <div class="row">
                     <div class="col-md-6">
                         <p><strong>Case ID:</strong> ${caseItem.id}</p>
                         <p><strong>Date:</strong> ${Utils.formatDate(caseItem.date)}</p>
+                        <p><strong>Channel:</strong> <span class="channel-badge ${channelBadgeClass}">${caseItem.channel}</span></p>
                         <p><strong>Platform:</strong> ${caseItem.platform}</p>
                         <p><strong>Branch:</strong> ${caseItem.branch}</p>
                         <p><strong>Order Number:</strong> ${caseItem.orderNumber}</p>
-                        <p><strong>Customer Name:</strong> ${caseItem.customerName}</p>
                     </div>
                     <div class="col-md-6">
+                        <p><strong>Customer Name:</strong> ${caseItem.customerName}</p>
                         <p><strong>Issue Type:</strong> ${caseItem.issueType}</p>
                         <p><strong>Order Value:</strong> AED ${caseItem.orderValue.toFixed(2)}</p>
                         <p><strong>Compensation Value:</strong> AED ${caseItem.compensationValue.toFixed(2)}</p>
@@ -2458,6 +3023,13 @@ Thank you`
                         <p><strong>Agent Name:</strong> ${caseItem.agentName}</p>
                     </div>
                 </div>
+                ${caseItem.callReference ? `
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <p><strong>Call Reference:</strong> ${caseItem.callReference}</p>
+                    </div>
+                </div>
+                ` : ''}
                 <div class="row mt-3">
                     <div class="col-12">
                         <p><strong>Action Taken:</strong></p>
@@ -2508,46 +3080,56 @@ Thank you`
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="editPlatform" class="form-label">Platform <span class="text-danger">*</span></label>
-                        <select class="form-select" id="editPlatform" required>
-                            <option value="Noon" ${caseItem.platform === 'Noon' ? 'selected' : ''}>Noon</option>
-                            <option value="Careem" ${caseItem.platform === 'Careem' ? 'selected' : ''}>Careem</option>
-                            <option value="Smile" ${caseItem.platform === 'Smile' ? 'selected' : ''}>Smile</option>
-                            <option value="Deliveroo" ${caseItem.platform === 'Deliveroo' ? 'selected' : ''}>Deliveroo</option>
-                            <option value="Keita" ${caseItem.platform === 'Keita' ? 'selected' : ''}>Keita</option>
+                        <label for="editChannel" class="form-label">Channel <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editChannel" required>
+                            <option value="">Select Channel</option>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="editBranch" class="form-label">Branch <span class="text-danger">*</span></label>
-                        <select class="form-select" id="editBranch" required>
-                            ${AppState.branches.map(branch => `<option value="${branch}" ${caseItem.branch === branch ? 'selected' : ''}>${branch}</option>`).join('')}
+                        <label for="editPlatform" class="form-label">Platform <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editPlatform" required>
+                            <option value="">Select Platform</option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="editBranch" class="form-label">Branch <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editBranch" required>
+                            <option value="">Select Branch</option>
+                        </select>
+                    </div>
                     <div class="col-md-6 mb-3">
                         <label for="editOrderNumber" class="form-label">Order Number <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="editOrderNumber" value="${caseItem.orderNumber}" required>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="editCustomerName" class="form-label">Customer Name / Number <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="editCustomerName" value="${caseItem.customerName}" required>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="editIssueType" class="form-label">Issue Type <span class="text-danger">*</span></label>
                         <select class="form-select" id="editIssueType" required>
-                            ${AppState.issueTypes.map(type => `<option value="${type}" ${caseItem.issueType === type ? 'selected' : ''}>${type}</option>`).join('')}
+                            <option value="">Select Issue Type</option>
                         </select>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="editResponsibleParty" class="form-label">Responsible Party <span class="text-danger">*</span></label>
                         <select class="form-select" id="editResponsibleParty" required>
+                            <option value="">Select Responsible Party</option>
                             <option value="Platform" ${caseItem.responsibleParty === 'Platform' ? 'selected' : ''}>Platform</option>
                             <option value="Restaurant" ${caseItem.responsibleParty === 'Restaurant' ? 'selected' : ''}>Restaurant</option>
                             <option value="Driver" ${caseItem.responsibleParty === 'Driver' ? 'selected' : ''}>Driver</option>
+                            <option value="Call Center" ${caseItem.responsibleParty === 'Call Center' ? 'selected' : ''}>Call Center</option>
                         </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="editAgentName" class="form-label">Agent Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="editAgentName" value="${caseItem.agentName}" required>
                     </div>
                 </div>
                 <div class="row">
@@ -2573,8 +3155,8 @@ Thank you`
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="editAgentName" class="form-label">Agent Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="editAgentName" value="${caseItem.agentName}" required>
+                        <label for="editCallReference" class="form-label">Call Reference (if applicable)</label>
+                        <input type="text" class="form-control" id="editCallReference" value="${caseItem.callReference || ''}" placeholder="Enter call reference number">
                     </div>
                 </div>
                 <div class="row">
@@ -2596,6 +3178,57 @@ Thank you`
                     </div>
                 </div>
             `;
+            
+            // Populate dynamic selects
+            setTimeout(() => {
+                // Update channel select
+                const editChannelSelect = document.getElementById('editChannel');
+                if (editChannelSelect) {
+                    [...AppState.channels.platform, ...AppState.channels.callCenter, ...AppState.channels.online].forEach(channel => {
+                        const option = document.createElement('option');
+                        option.value = channel;
+                        option.textContent = channel;
+                        if (channel === caseItem.channel) option.selected = true;
+                        editChannelSelect.appendChild(option);
+                    });
+                }
+                
+                // Update platform select
+                const editPlatformSelect = document.getElementById('editPlatform');
+                if (editPlatformSelect) {
+                    AppState.channels.platform.forEach(platform => {
+                        const option = document.createElement('option');
+                        option.value = platform;
+                        option.textContent = platform;
+                        if (platform === caseItem.platform) option.selected = true;
+                        editPlatformSelect.appendChild(option);
+                    });
+                }
+                
+                // Update branch select
+                const editBranchSelect = document.getElementById('editBranch');
+                if (editBranchSelect) {
+                    AppState.branches.forEach(branch => {
+                        const option = document.createElement('option');
+                        option.value = branch;
+                        option.textContent = branch;
+                        if (branch === caseItem.branch) option.selected = true;
+                        editBranchSelect.appendChild(option);
+                    });
+                }
+                
+                // Update issue type select
+                const editIssueTypeSelect = document.getElementById('editIssueType');
+                if (editIssueTypeSelect) {
+                    AppState.issueTypes.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type;
+                        option.textContent = type;
+                        if (type === caseItem.issueType) option.selected = true;
+                        editIssueTypeSelect.appendChild(option);
+                    });
+                }
+            }, 100);
             
             AppState.currentEditingCaseId = caseId;
             
@@ -2627,6 +3260,7 @@ Thank you`
             AppState.compensationCases[caseIndex] = {
                 ...AppState.compensationCases[caseIndex],
                 date: document.getElementById('editDate').value,
+                channel: document.getElementById('editChannel').value,
                 platform: document.getElementById('editPlatform').value,
                 branch: document.getElementById('editBranch').value,
                 orderNumber: Utils.sanitizeInput(document.getElementById('editOrderNumber').value),
@@ -2638,6 +3272,7 @@ Thank you`
                 status: newStatus,
                 actionTaken: Utils.sanitizeInput(document.getElementById('editActionTaken').value),
                 agentName: Utils.sanitizeInput(document.getElementById('editAgentName').value),
+                callReference: Utils.sanitizeInput(document.getElementById('editCallReference').value),
                 supportingFile: Utils.sanitizeInput(document.getElementById('editSupportingFile').value),
                 customerComment: Utils.sanitizeInput(document.getElementById('editCustomerComment').value),
                 dateClosed: (originalStatus !== 'Closed' && newStatus === 'Closed') ? new Date().toISOString() : AppState.compensationCases[caseIndex].dateClosed,
@@ -2656,6 +3291,7 @@ Thank you`
             updateDashboard();
             updateLastUpdated();
             updateWhatsAppCaseSelect();
+            updateChannelPerformanceTable();
             
             showToast('Case updated successfully!', 'success');
         }
@@ -2677,12 +3313,14 @@ Thank you`
             updateDashboard();
             updateLastUpdated();
             updateWhatsAppCaseSelect();
+            updateChannelPerformanceTable();
             
             showToast('Case deleted successfully!', 'success');
         }
 
         // Apply filters
         function applyFilters() {
+            const channel = document.getElementById('filterChannel').value;
             const platform = document.getElementById('filterPlatform').value;
             const branch = document.getElementById('filterBranch').value;
             const status = document.getElementById('filterStatus').value;
@@ -2691,6 +3329,9 @@ Thank you`
             const dateTo = document.getElementById('dateTo').value;
             
             AppState.filteredCases = AppState.compensationCases.filter(caseItem => {
+                // Channel filter
+                if (channel && caseItem.channel !== channel) return false;
+                
                 // Platform filter
                 if (platform && caseItem.platform !== platform) return false;
                 
@@ -2718,6 +3359,7 @@ Thank you`
 
         // Reset filters
         function resetFilters() {
+            document.getElementById('filterChannel').value = '';
             document.getElementById('filterPlatform').value = '';
             document.getElementById('filterBranch').value = '';
             document.getElementById('filterStatus').value = '';
@@ -2743,6 +3385,23 @@ Thank you`
                         option.value = type;
                         option.textContent = type;
                         if (type === currentValue) option.selected = true;
+                        select.appendChild(option);
+                    });
+                }
+            });
+            
+            // Update platform selects
+            const platformSelects = ['platform', 'filterPlatform'];
+            platformSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    select.innerHTML = '<option value="">Select Platform</option>';
+                    AppState.channels.platform.forEach(platform => {
+                        const option = document.createElement('option');
+                        option.value = platform;
+                        option.textContent = platform;
+                        if (platform === currentValue) option.selected = true;
                         select.appendChild(option);
                     });
                 }
@@ -2906,12 +3565,18 @@ Thank you`
             Utils.storage.remove('compensationCases');
             Utils.storage.remove('whatsappHistory');
             Utils.storage.remove('managerSettings');
+            Utils.storage.remove('channels');
             Utils.storage.remove('issueTypes');
             Utils.storage.remove('branches');
             
             // Reset app state
             AppState.compensationCases = [];
             AppState.whatsappHistory = [];
+            AppState.channels = {
+                platform: ['Noon', 'Careem', 'Smile', 'Deliveroo', 'Keita'],
+                callCenter: ['Delivery Call Center', 'Customer Service Hotline'],
+                online: ['Online Call Center', 'Website Chat', 'Email Support']
+            };
             AppState.issueTypes = [
                 'Missing Item',
                 'Late Delivery',
@@ -2955,6 +3620,7 @@ Please review and approve the following compensation case:
 📋 Case Details:
 • Case ID: {caseId}
 • Date: {date}
+• Channel: {channel}
 • Platform: {platform}
 • Branch: {branch}
 • Order #: {orderNumber}
@@ -2969,6 +3635,12 @@ Action Taken: {actionTaken}
 Please reply with APPROVED or REJECTED
 
 Thank you`
+            };
+            
+            AppState.channels = {
+                platform: ['Noon', 'Careem', 'Smile', 'Deliveroo', 'Keita'],
+                callCenter: ['Delivery Call Center', 'Customer Service Hotline'],
+                online: ['Online Call Center', 'Website Chat', 'Email Support']
             };
             
             AppState.issueTypes = [
@@ -2994,6 +3666,7 @@ Thank you`
             
             // Save to storage
             Utils.storage.set('managerSettings', AppState.managerSettings);
+            Utils.storage.set('channels', AppState.channels);
             Utils.storage.set('issueTypes', AppState.issueTypes);
             Utils.storage.set('branches', AppState.branches);
             
@@ -3001,6 +3674,7 @@ Thank you`
             loadManagerSettings();
             updateDynamicSelects();
             loadSettingsData();
+            loadChannelData();
             
             showToast('Settings reset to defaults', 'success');
         }
@@ -3042,7 +3716,7 @@ Thank you`
             AppState.compensationCases.forEach(caseItem => {
                 const option = document.createElement('option');
                 option.value = caseItem.id;
-                option.textContent = `${caseItem.id} - ${caseItem.customerName} (${caseItem.platform})`;
+                option.textContent = `${caseItem.id} - ${caseItem.customerName} (${caseItem.channel})`;
                 select.appendChild(option);
             });
         }
@@ -3076,6 +3750,7 @@ Thank you`
             // Replace placeholders
             message = message.replace(/{caseId}/g, caseItem.id);
             message = message.replace(/{date}/g, Utils.formatDate(caseItem.date));
+            message = message.replace(/{channel}/g, caseItem.channel);
             message = message.replace(/{platform}/g, caseItem.platform);
             message = message.replace(/{branch}/g, caseItem.branch);
             message = message.replace(/{orderNumber}/g, caseItem.orderNumber);
@@ -3221,18 +3896,18 @@ Thank you`
                     <div class="col-md-6">
                         <p><strong>Case ID:</strong> ${caseItem.id}</p>
                         <p><strong>Date:</strong> ${Utils.formatDate(caseItem.date)}</p>
+                        <p><strong>Channel:</strong> ${caseItem.channel}</p>
                         <p><strong>Platform:</strong> ${caseItem.platform}</p>
                         <p><strong>Branch:</strong> ${caseItem.branch}</p>
                         <p><strong>Order Number:</strong> ${caseItem.orderNumber}</p>
-                        <p><strong>Customer Name:</strong> ${caseItem.customerName}</p>
                     </div>
                     <div class="col-md-6">
+                        <p><strong>Customer Name:</strong> ${caseItem.customerName}</p>
                         <p><strong>Issue Type:</strong> ${caseItem.issueType}</p>
                         <p><strong>Order Value:</strong> AED ${caseItem.orderValue.toFixed(2)}</p>
                         <p><strong>Compensation Value:</strong> AED ${caseItem.compensationValue.toFixed(2)}</p>
                         <p><strong>Responsible Party:</strong> ${caseItem.responsibleParty}</p>
                         <p><strong>Status:</strong> <span class="status-badge status-${caseItem.status.toLowerCase().replace(' ', '-')}">${caseItem.status}</span></p>
-                        <p><strong>Agent Name:</strong> ${caseItem.agentName}</p>
                     </div>
                 </div>
             `;
@@ -3326,6 +4001,7 @@ Thank you`
                     const caseData = {
                         id: row['Case ID'] || Utils.generateId(),
                         date: formatDateForImport(row['Date']) || new Date().toISOString().split('T')[0],
+                        channel: row['Channel'] || '',
                         platform: row['Platform'] || '',
                         branch: row['Branch'] || '',
                         orderNumber: String(row['Order Number'] || ''),
@@ -3337,6 +4013,7 @@ Thank you`
                         status: row['Status'] || 'Open',
                         actionTaken: String(row['Action Taken'] || ''),
                         agentName: String(row['Agent Name'] || ''),
+                        callReference: String(row['Call Reference'] || ''),
                         dateClosed: row['Date Closed'] || null,
                         supportingFile: String(row['Supporting File'] || ''),
                         customerComment: String(row['Customer Comment'] || ''),
@@ -3344,7 +4021,7 @@ Thank you`
                     };
                     
                     // Validate required fields
-                    if (caseData.platform && caseData.branch && caseData.orderNumber && caseData.customerName) {
+                    if (caseData.channel && caseData.platform && caseData.branch && caseData.orderNumber && caseData.customerName) {
                         processedData.push(caseData);
                     }
                 } catch (error) {
@@ -3384,6 +4061,7 @@ Thank you`
                 row.innerHTML = `
                     <td>${caseData.id}</td>
                     <td>${caseData.date}</td>
+                    <td>${caseData.channel}</td>
                     <td>${caseData.platform}</td>
                     <td>${caseData.branch}</td>
                     <td>${caseData.orderNumber}</td>
@@ -3398,7 +4076,7 @@ Thank you`
             
             if (AppState.importData.length > 10) {
                 const row = document.createElement('tr');
-                row.innerHTML = `<td colspan="10" class="text-center">... and ${AppState.importData.length - 10} more records</td>`;
+                row.innerHTML = `<td colspan="11" class="text-center">... and ${AppState.importData.length - 10} more records</td>`;
                 previewBody.appendChild(row);
             }
             
@@ -3428,6 +4106,8 @@ Thank you`
                 updateDashboard();
                 updateLastUpdated();
                 updateWhatsAppCaseSelect();
+                updateChannelOverview();
+                updateChannelPerformanceTable();
                 
                 showLoadingSpinner(false);
                 
@@ -3455,6 +4135,7 @@ Thank you`
                 const templateData = [{
                     'Case ID': 'CC-20231201-001',
                     'Date': '2023-12-01',
+                    'Channel': 'Noon',
                     'Platform': 'Noon',
                     'Branch': 'Hamdan',
                     'Order Number': 'ORD123456',
@@ -3466,6 +4147,7 @@ Thank you`
                     'Status': 'Closed',
                     'Action Taken': 'Refund processed via platform',
                     'Agent Name': 'Agent A',
+                    'Call Reference': '',
                     'Date Closed': '2023-12-02',
                     'Supporting File': '',
                     'Customer Comment': 'Customer satisfied with resolution'
@@ -3597,6 +4279,9 @@ Thank you`
                 case 'detailed':
                     reportContent = generateDetailedReport(filteredCases, dateFrom, dateTo);
                     break;
+                case 'channel':
+                    reportContent = generateChannelReport(filteredCases, dateFrom, dateTo);
+                    break;
                 case 'platform':
                     reportContent = generatePlatformReport(filteredCases, dateFrom, dateTo);
                     break;
@@ -3641,11 +4326,13 @@ Thank you`
             const closedCases = cases.filter(c => c.status === 'Closed').length;
             const resolutionRate = totalCases > 0 ? ((closedCases / totalCases) * 100).toFixed(1) : 0;
             
+            const channelCounts = {};
             const platformCounts = {};
             const branchCounts = {};
             const issueTypeCounts = {};
             
             cases.forEach(c => {
+                channelCounts[c.channel] = (channelCounts[c.channel] || 0) + 1;
                 platformCounts[c.platform] = (platformCounts[c.platform] || 0) + 1;
                 branchCounts[c.branch] = (branchCounts[c.branch] || 0) + 1;
                 issueTypeCounts[c.issueType] = (issueTypeCounts[c.issueType] || 0) + 1;
@@ -3694,7 +4381,18 @@ Thank you`
                 </div>
                 
                 <div class="row mt-4">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <h5>Cases by Channel</h5>
+                        <ul class="list-group">
+                            ${Object.entries(channelCounts).map(([channel, count]) => 
+                                `<li class="list-group-item d-flex justify-content-between">
+                                    <span>${channel}</span>
+                                    <span class="badge bg-primary rounded-pill">${count}</span>
+                                </li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
                         <h5>Cases by Platform</h5>
                         <ul class="list-group">
                             ${Object.entries(platformCounts).map(([platform, count]) => 
@@ -3705,7 +4403,7 @@ Thank you`
                             ).join('')}
                         </ul>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <h5>Cases by Branch</h5>
                         <ul class="list-group">
                             ${Object.entries(branchCounts).map(([branch, count]) => 
@@ -3716,7 +4414,7 @@ Thank you`
                             ).join('')}
                         </ul>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <h5>Top Issue Types</h5>
                         <ul class="list-group">
                             ${Object.entries(issueTypeCounts)
@@ -3748,6 +4446,7 @@ Thank you`
                             <tr>
                                 <th>Case ID</th>
                                 <th>Date</th>
+                                <th>Channel</th>
                                 <th>Platform</th>
                                 <th>Branch</th>
                                 <th>Order #</th>
@@ -3759,10 +4458,15 @@ Thank you`
                             </tr>
                         </thead>
                         <tbody>
-                            ${cases.map(c => `
+                            ${cases.map(c => {
+                                const channelType = Utils.getChannelType(c.channel);
+                                const channelBadgeClass = channelType === 'platform' ? 'channel-platform' : 
+                                                         channelType === 'callCenter' ? 'channel-call' : 'channel-online';
+                                return `
                                 <tr>
                                     <td>${c.id}</td>
                                     <td>${Utils.formatDate(c.date)}</td>
+                                    <td><span class="channel-badge ${channelBadgeClass}">${c.channel}</span></td>
                                     <td>${c.platform}</td>
                                     <td>${c.branch}</td>
                                     <td>${c.orderNumber}</td>
@@ -3772,7 +4476,78 @@ Thank you`
                                     <td><span class="status-badge status-${c.status.toLowerCase().replace(' ', '-')}">${c.status}</span></td>
                                     <td>${c.agentName}</td>
                                 </tr>
-                            `).join('')}
+                            `}).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function generateChannelReport(cases, dateFrom, dateTo) {
+            const channelData = {};
+            
+            cases.forEach(c => {
+                if (!channelData[c.channel]) {
+                    channelData[c.channel] = {
+                        cases: 0,
+                        compensation: 0,
+                        openCases: 0,
+                        closedCases: 0
+                    };
+                }
+                
+                channelData[c.channel].cases++;
+                channelData[c.channel].compensation += c.compensationValue;
+                
+                if (c.status === 'Open') {
+                    channelData[c.channel].openCases++;
+                } else if (c.status === 'Closed') {
+                    channelData[c.channel].closedCases++;
+                }
+            });
+            
+            return `
+                <div class="print-only">
+                    <h2>Crispy Chicken - Channel Performance Report</h2>
+                    <p>Generated on: ${new Date().toLocaleString()}</p>
+                    <p>Period: ${Utils.formatDate(dateFrom)} to ${Utils.formatDate(dateTo)}</p>
+                </div>
+                
+                <div class="table-responsive mt-4">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                <th>Type</th>
+                                <th>Total Cases</th>
+                                <th>Total Compensation</th>
+                                <th>Open Cases</th>
+                                <th>Closed Cases</th>
+                                <th>Resolution Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.entries(channelData).map(([channel, data]) => {
+                                const channelType = Utils.getChannelType(channel);
+                                const resolutionRate = data.cases > 0 
+                                    ? ((data.closedCases / data.cases) * 100).toFixed(1) 
+                                    : 0;
+                                
+                                const channelBadgeClass = channelType === 'platform' ? 'channel-platform' : 
+                                                         channelType === 'callCenter' ? 'channel-call' : 'channel-online';
+                                
+                                return `
+                                    <tr>
+                                        <td><span class="channel-badge ${channelBadgeClass}">${channel}</span></td>
+                                        <td>${channelType.charAt(0).toUpperCase() + channelType.slice(1)}</td>
+                                        <td>${data.cases}</td>
+                                        <td>AED ${data.compensation.toFixed(2)}</td>
+                                        <td>${data.openCases}</td>
+                                        <td>${data.closedCases}</td>
+                                        <td>${resolutionRate}%</td>
+                                    </tr>
+                                `;
+                            }).join('')}
                         </tbody>
                     </table>
                 </div>
